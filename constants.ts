@@ -12,6 +12,8 @@ export const GITHUB_REPO_URL = 'https://github.com/GewoonJaap/tesla-delivery-sta
 
 export const COMPOSITOR_BASE_URL = 'https://static-assets.tesla.com/configurator/compositor';
 
+export const MAX_HISTORY_ENTRIES = 20;
+
 export const FALLBACK_CAR_IMAGE_URLS: Record<string, string> = {
   'S': 'https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Mega-Menu-Vehicles-Model-S.png',
   '3': 'https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Mega-Menu-Vehicles-Model-3-Performance-LHD.png',

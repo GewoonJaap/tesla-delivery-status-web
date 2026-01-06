@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MARKET_OPTIONS_MAP } from '../data/market-options';
 import { CheckIcon, PlusCircleIcon, MinusCircleIcon } from './icons';
@@ -44,8 +43,12 @@ const VehicleOptions: React.FC<VehicleOptionsProps> = ({ optionsString, diffValu
   };
 
   if (diffValue) {
-    const oldCodes = new Set(diffValue.old?.split(',').filter(c => c.trim()) || []);
-    const newCodes = new Set(diffValue.new?.split(',').filter(c => c.trim()) || []);
+    const oldString = diffValue.old || '';
+    const newString = diffValue.new || '';
+    
+    // Explicitly type to avoid unknown type inference
+    const oldCodes = new Set<string>(oldString ? oldString.split(',').filter((c: string) => c.trim()) : []);
+    const newCodes = new Set<string>(newString ? newString.split(',').filter((c: string) => c.trim()) : []);
 
     const unchanged = [...oldCodes].filter(code => newCodes.has(code));
     const added = [...newCodes].filter(code => !oldCodes.has(code));

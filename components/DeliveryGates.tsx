@@ -83,7 +83,8 @@ const GateItem: React.FC<{ gate: Gate }> = ({ gate }) => {
 
 
 const DeliveryGates: React.FC<DeliveryGatesProps> = ({ gates }) => {
-  const gateArray = gates ? Object.values(gates) : [];
+  // Explicitly type gateArray to allow filter and sort to infer types correctly
+  const gateArray: Gate[] = gates ? Object.values(gates) : [];
 
   const sortGates = (gateA: Gate, gateB: Gate): number => {
     // Priority 1: Customer tasks before Tesla tasks

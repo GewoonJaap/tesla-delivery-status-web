@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { HistoricalSnapshot } from '../types';
 import { compareObjects } from '../utils/helpers';
 import { DIFF_KEY_LABELS } from '../constants';
-import { XIcon, FileTextIcon, ArrowRightIcon } from './icons';
+import { XIcon, FileTextIcon, ArrowRightIcon, TrashIcon } from './icons';
 
 interface HistoryModalProps {
   isOpen: boolean;
@@ -47,22 +46,34 @@ const ChangeItem: React.FC<{ label: string; from: any; to: any }> = ({ label, fr
 
 const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderReferenceNumber }) => {
   const [history, setHistory] = useState<HistoricalSnapshot[]>([]);
+  const [showConfirmClear, setShowConfirmClear] = useState(false);
+
+  const loadHistory = useCallback(() => {
+    try {
+      const storedHistoryJson = localStorage.getItem(`tesla-order-history-${orderReferenceNumber}`);
+      if (storedHistoryJson) {
+        setHistory(JSON.parse(storedHistoryJson));
+      } else {
+        setHistory([]);
+      }
+    } catch (e) {
+      console.error("Failed to parse history from localStorage", e);
+      setHistory([]);
+    }
+  }, [orderReferenceNumber]);
 
   useEffect(() => {
     if (isOpen) {
-      try {
-        const storedHistoryJson = localStorage.getItem(`tesla-order-history-${orderReferenceNumber}`);
-        if (storedHistoryJson) {
-          setHistory(JSON.parse(storedHistoryJson));
-        } else {
-          setHistory([]);
-        }
-      } catch (e) {
-        console.error("Failed to parse history from localStorage", e);
-        setHistory([]);
-      }
+      loadHistory();
+      setShowConfirmClear(false);
     }
-  }, [isOpen, orderReferenceNumber]);
+  }, [isOpen, loadHistory]);
+
+  const handleClearHistory = () => {
+    localStorage.removeItem(`tesla-order-history-${orderReferenceNumber}`);
+    setHistory([]);
+    setShowConfirmClear(false);
+  };
 
   if (!isOpen) {
     return null;
@@ -70,7 +81,12 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderRefer
 
   const renderHistoryLog = () => {
     if (history.length === 0) {
-      return <p className="text-center text-gray-500 dark:text-tesla-gray-400 p-8">No history recorded for this order yet.</p>;
+      return (
+        <div className="flex flex-col items-center justify-center p-12 text-center">
+          <FileTextIcon className="w-12 h-12 text-gray-300 dark:text-tesla-gray-600 mb-4" />
+          <p className="text-gray-500 dark:text-tesla-gray-400">No history recorded for this order yet.</p>
+        </div>
+      );
     }
     
     const reversedHistory = [...history].reverse();
@@ -152,17 +168,51 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderRefer
       >
         <header className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-tesla-gray-700 flex-shrink-0">
           <h2 id="history-modal-title" className="text-xl font-bold text-gray-900 dark:text-white">Order History</h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-tesla-gray-700 transition-all duration-150 active:scale-90 active:bg-gray-300 dark:active:bg-tesla-gray-600"
-            aria-label="Close"
-          >
-            <XIcon className="w-6 h-6 text-gray-600 dark:text-tesla-gray-300" />
-          </button>
+          <div className="flex items-center space-x-2">
+            {history.length > 0 && (
+              <button
+                onClick={() => setShowConfirmClear(true)}
+                className="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 dark:text-tesla-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-all duration-150 active:scale-90"
+                title="Clear History"
+              >
+                <TrashIcon className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-tesla-gray-700 transition-all duration-150 active:scale-90 active:bg-gray-300 dark:active:bg-tesla-gray-600"
+              aria-label="Close"
+            >
+              <XIcon className="w-6 h-6 text-gray-600 dark:text-tesla-gray-300" />
+            </button>
+          </div>
         </header>
-        <main className="overflow-y-auto px-6 pt-6">
+        <main className="overflow-y-auto px-6 pt-6 flex-grow">
           {renderHistoryLog()}
         </main>
+
+        {showConfirmClear && (
+          <div className="absolute inset-x-0 bottom-0 p-6 bg-white dark:bg-tesla-gray-900 border-t border-gray-200 dark:border-tesla-gray-700 animate-fade-in-up">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Clear History?</h3>
+            <p className="text-sm text-gray-600 dark:text-tesla-gray-400 mb-4">
+              This will permanently delete the change log for this order and free up browser storage space. This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowConfirmClear(false)}
+                className="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-tesla-gray-800 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleClearHistory}
+                className="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-colors"
+              >
+                Yes, Clear History
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

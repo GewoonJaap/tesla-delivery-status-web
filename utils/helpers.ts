@@ -47,6 +47,35 @@ export function isTokenValid(accessToken: string): boolean {
     return decoded.exp > (Date.now() / 1000) + 60;
 }
 
+// --- Storage Helpers ---
+
+/**
+ * Safely sets an item in localStorage, catching QuotaExceededError.
+ * Returns true if successful, false otherwise.
+ */
+export function safeLocalStorageSetItem(key: string, value: string): boolean {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (e: any) {
+    // Check if the error is a QuotaExceededError
+    const isQuotaError = 
+      e instanceof DOMException && (
+        e.code === 22 || 
+        e.code === 1014 || 
+        e.name === 'QuotaExceededError' || 
+        e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+      );
+    
+    if (isQuotaError) {
+      console.warn(`LocalStorage quota exceeded while saving key: ${key}. Consider clearing some data.`);
+    } else {
+      console.error(`An error occurred while saving to LocalStorage: ${key}`, e);
+    }
+    return false;
+  }
+}
+
 // --- Comparison Helpers ---
 
 function isObject(obj: any): obj is object {

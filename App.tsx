@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { TeslaTokens } from './types';
 import { exchangeCodeForTokens, refreshAccessToken, TokenExpiredError } from './services/tesla';
-import { isTokenValid } from './utils/helpers';
+import { isTokenValid, safeLocalStorageSetItem } from './utils/helpers';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
 import Spinner from './components/Spinner';
@@ -62,7 +61,7 @@ const App: React.FC = () => {
         console.log("Access token expired, attempting to refresh...");
         try {
           const newTokens = await refreshAccessToken(tokens.refresh_token);
-          localStorage.setItem('tesla-tokens', JSON.stringify(newTokens));
+          safeLocalStorageSetItem('tesla-tokens', JSON.stringify(newTokens));
           setTokens(newTokens);
           console.log("Token refresh successful, retrying API request...");
           // Retry the request with the new token
@@ -104,7 +103,7 @@ const App: React.FC = () => {
       }
 
       const newTokens = await exchangeCodeForTokens(code, codeVerifier);
-      localStorage.setItem('tesla-tokens', JSON.stringify(newTokens));
+      safeLocalStorageSetItem('tesla-tokens', JSON.stringify(newTokens));
       setTokens(newTokens);
       
       try {
@@ -135,7 +134,7 @@ const App: React.FC = () => {
             setTokens(storedTokens);
           } else {
             const newTokens = await refreshAccessToken(storedTokens.refresh_token);
-            localStorage.setItem('tesla-tokens', JSON.stringify(newTokens));
+            safeLocalStorageSetItem('tesla-tokens', JSON.stringify(newTokens));
             setTokens(newTokens);
           }
         } catch (error) {

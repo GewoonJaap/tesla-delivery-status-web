@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { DELIVERY_CHECKLIST } from '../constants';
+import { safeLocalStorageSetItem } from '../utils/helpers';
 
 interface DeliveryChecklistProps {
   orderReferenceNumber: string;
@@ -38,7 +38,7 @@ const DeliveryChecklist: React.FC<DeliveryChecklistProps> = ({ orderReferenceNum
   useEffect(() => {
     try {
         if (typeof localStorage !== 'undefined') {
-            localStorage.setItem(storageKey, JSON.stringify(checkedItems));
+            safeLocalStorageSetItem(storageKey, JSON.stringify(checkedItems));
         }
     } catch (error) {
       console.error("Error saving checklist state to localStorage", error);
