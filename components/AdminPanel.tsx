@@ -5,12 +5,13 @@ import { XIcon } from './icons';
 interface AdminPanelProps {
   isOpen: boolean;
   onClose: () => void;
-  onApply: (data: CombinedOrder) => void;
+  onApply: (data: CombinedOrder, asHistory: boolean) => void;
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onApply }) => {
   const [jsonInput, setJsonInput] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [saveAsHistory, setSaveAsHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -25,9 +26,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onApply }) => 
       const parsed = JSON.parse(jsonInput);
       // Basic validation to check if it looks like the expected object
       if (parsed.order && parsed.details && parsed.order.referenceNumber) {
-        onApply(parsed);
+        onApply(parsed, saveAsHistory);
         onClose();
         setJsonInput(''); // Clear on successful apply
+        setSaveAsHistory(false); // Reset checkbox
       } else {
         setError('Invalid JSON structure. The root object should contain "order" and "details" keys.');
       }
@@ -120,20 +122,31 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onApply }) => 
             </div>
           )}
         </main>
-        <footer className="p-5 border-t border-gray-200 dark:border-tesla-gray-700 flex-shrink-0 flex justify-end gap-4">
-            <button 
-              onClick={onClose}
-              className="px-6 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-tesla-gray-700 border border-gray-300 dark:border-tesla-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-tesla-gray-600 transition-all duration-150 active:scale-95"
-            >
-              Cancel
-            </button>
-            <button 
-              onClick={handleApply}
-              className="px-6 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-150 active:scale-95 disabled:opacity-50"
-              disabled={!jsonInput.trim()}
-            >
-              Apply Mock Data
-            </button>
+        <footer className="p-5 border-t border-gray-200 dark:border-tesla-gray-700 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <label className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer select-none self-start sm:self-auto">
+                <input 
+                    type="checkbox" 
+                    checked={saveAsHistory}
+                    onChange={(e) => setSaveAsHistory(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-white dark:bg-tesla-gray-700 dark:border-tesla-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-tesla-gray-800 transition"
+                />
+                <span>Add to History Log</span>
+            </label>
+            <div className="flex gap-4 w-full sm:w-auto justify-end">
+                <button 
+                  onClick={onClose}
+                  className="px-6 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-tesla-gray-700 border border-gray-300 dark:border-tesla-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-tesla-gray-600 transition-all duration-150 active:scale-95"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleApply}
+                  className="px-6 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-150 active:scale-95 disabled:opacity-50"
+                  disabled={!jsonInput.trim()}
+                >
+                  Apply Mock Data
+                </button>
+            </div>
         </footer>
       </div>
     </div>

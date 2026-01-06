@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { TeslaTokens, CombinedOrder, OrderDiff, HistoricalSnapshot } from '../types';
 import { getAllOrderData } from '../services/tesla';
-import { compareObjects } from '../utils/helpers';
+import { compareObjects, safeLocalStorageSetItem } from '../utils/helpers';
+import { MAX_HISTORY_ENTRIES } from '../constants';
 import OrderCard from './OrderCard';
 import Spinner from './Spinner';
 import Toast from './Toast';
@@ -96,12 +97,21 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
           const diff = compareObjects(lastSnapshotData, newCombinedOrder);
           if (Object.keys(diff).length > 0) {
             history.push({ timestamp: Date.now(), data: newCombinedOrder });
-            localStorage.setItem(historyKey, JSON.stringify(history));
+            
+            // Prune history to keep storage usage under control
+            if (history.length > MAX_HISTORY_ENTRIES) {
+              history = history.slice(-MAX_HISTORY_ENTRIES);
+            }
+            
+            const success = safeLocalStorageSetItem(historyKey, JSON.stringify(history));
+            if (!success) {
+              setToast({ message: 'Warning: Browser storage is full. History may not be saved.', type: 'info' });
+            }
             latestDiffs[rn] = diff;
           }
         } else {
           const initialHistory = [{ timestamp: Date.now(), data: newCombinedOrder }];
-          localStorage.setItem(historyKey, JSON.stringify(initialHistory));
+          safeLocalStorageSetItem(historyKey, JSON.stringify(initialHistory));
         }
       }
 
@@ -127,9 +137,49 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleApplyMockJson = (json: CombinedOrder) => {
-    setMockOrder(json);
-    setToast({ message: 'Developer mode: Mock data loaded!', type: 'info' });
+  const handleApplyMockJson = (json: CombinedOrder, asHistory: boolean) => {
+    const rn = json.order.referenceNumber;
+
+    if (asHistory) {
+      const historyKey = `tesla-order-history-${rn}`;
+      let history: HistoricalSnapshot[] = [];
+      try {
+        const storedHistoryJson = localStorage.getItem(historyKey);
+        if (storedHistoryJson) {
+          history = JSON.parse(storedHistoryJson);
+        }
+      } catch (e) {
+        console.error("Failed to parse history for mock data", e);
+        history = [];
+      }
+
+      const lastSnapshotData = history.length > 0 ? history[history.length - 1].data : null;
+      let diff: OrderDiff = {};
+
+      if (lastSnapshotData) {
+        diff = compareObjects(lastSnapshotData, json);
+      }
+
+      history.push({ timestamp: Date.now(), data: json });
+
+      if (history.length > MAX_HISTORY_ENTRIES) {
+        history = history.slice(-MAX_HISTORY_ENTRIES);
+      }
+
+      safeLocalStorageSetItem(historyKey, JSON.stringify(history));
+      setDiffs(prev => ({ ...prev, [rn]: diff }));
+      setMockOrder(json);
+      setToast({ message: 'Mock data saved to history and loaded!', type: 'success' });
+    } else {
+      setMockOrder(json);
+      // Clear diffs for this mock order to avoid showing stale data from live checks
+      setDiffs(prev => {
+          const newDiffs = { ...prev };
+          delete newDiffs[rn];
+          return newDiffs;
+      });
+      setToast({ message: 'Developer mode: Mock data loaded!', type: 'info' });
+    }
   };
 
   const handleResetToLive = () => {
@@ -141,6 +191,10 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
 
   const renderContent = () => {
     if (mockOrder) {
+      const rn = mockOrder.order.referenceNumber;
+      const diff = diffs[rn] || {};
+      const hasNewChanges = Object.keys(diff).length > 0;
+
       return (
         <>
           <div className="mb-4 p-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-500/40 text-yellow-800 dark:text-yellow-100 rounded-lg text-center font-semibold animate-fade-in-up">
@@ -149,10 +203,10 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
           <div className="flex justify-center animate-fade-in-up">
             <div className="w-full max-w-4xl">
               <OrderCard
-                key={mockOrder.order.referenceNumber}
+                key={rn}
                 combinedOrder={mockOrder}
-                diff={{}}
-                hasNewChanges={false}
+                diff={diff}
+                hasNewChanges={hasNewChanges}
               />
             </div>
           </div>
