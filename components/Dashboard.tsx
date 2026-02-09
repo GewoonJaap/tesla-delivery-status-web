@@ -169,6 +169,10 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
 
   const renderContent = () => {
     if (mockOrder) {
+            const rn = mockOrder.order.referenceNumber;
+      const diff = diffs[rn] || {};
+      const hasNewChanges = Object.keys(diff).length > 0;
+
       return (
         <>
           <div className="mb-4 p-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-500/40 text-yellow-800 dark:text-yellow-100 rounded-lg text-center font-semibold animate-fade-in-up">
@@ -177,10 +181,10 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
           <div className="flex justify-center animate-fade-in-up">
             <div className="w-full max-w-4xl">
               <OrderCard
-                key={mockOrder.order.referenceNumber}
+                key={rn}
                 combinedOrder={mockOrder}
-                diff={{}}
-                hasNewChanges={false}
+                diff={diff}
+                hasNewChanges={hasNewChanges}
               />
             </div>
           </div>
