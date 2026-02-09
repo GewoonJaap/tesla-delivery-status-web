@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { CoffeeIcon } from './icons';
 import Tooltip from './Tooltip';
@@ -35,16 +36,18 @@ const BuyMeACoffeeButton: React.FC = () => {
   const handleCoffeeClick = () => {
     try {
       localStorage.setItem('hasClickedBuyMeACoffee', 'true');
-      setShouldJiggle(false); // Stop any jiggling, also prevents future jiggles because of the check in useEffect
+      setShouldJiggle(false); // Stop any jiggling
     } catch (e) {
       console.error("Could not write to localStorage", e);
     }
   };
 
-  const coffeeLinkClasses = `flex items-center space-x-2 px-3 sm:px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-yellow-400/20 dark:bg-yellow-500/20 hover:bg-yellow-400/40 dark:hover:bg-yellow-500/30 rounded-full transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-100 dark:focus-visible:ring-offset-tesla-gray-900 active:scale-95 ${shouldJiggle ? 'animate-jiggle' : ''}`;
+  // Adjusted classes: padding is smaller on mobile (p-2) to make it a circle with the icon, 
+  // and expands on sm screens (px-3 py-2) to fit text.
+  const coffeeLinkClasses = `flex items-center justify-center p-2 sm:px-4 sm:py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-yellow-400/20 dark:bg-yellow-500/20 hover:bg-yellow-400/40 dark:hover:bg-yellow-500/30 rounded-full transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-100 dark:focus-visible:ring-offset-tesla-gray-900 active:scale-95 ${shouldJiggle ? 'animate-jiggle' : ''}`;
 
   return (
-    <Tooltip text="If this app saves you from compulsively checking the Tesla app, consider supporting its development. It's greatly appreciated!">
+    <Tooltip text="Support development">
       <a
         href="https://buymeacoffee.com/mrproper"
         target="_blank"
@@ -53,7 +56,7 @@ const BuyMeACoffeeButton: React.FC = () => {
         onClick={handleCoffeeClick}
         aria-label="Support the developer by buying them a coffee"
       >
-        <CoffeeIcon className="w-5 h-5" />
+        <CoffeeIcon className="w-5 h-5 sm:mr-2" />
         <span className="hidden sm:inline">Buy me a coffee</span>
       </a>
     </Tooltip>

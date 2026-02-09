@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
+import { CoffeeIcon } from './icons';
 
 interface CountdownTimerProps {
   targetDateString: string;
@@ -57,6 +59,8 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDateString }) => 
     return () => clearInterval(timer);
   }, [targetDate]);
 
+  const buttonClasses = "group flex items-center justify-center px-5 py-2.5 text-sm font-medium text-gray-800 dark:text-gray-100 bg-yellow-50 dark:bg-yellow-900/30 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 border border-yellow-200 dark:border-yellow-700/50 rounded-full transition-all duration-200 shadow-sm hover:shadow text-center";
+
   if (!timeLeft) {
      if (targetDate && +targetDate <= +new Date()) {
         return (
@@ -68,6 +72,18 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDateString }) => 
                     <p className="text-sm text-green-700 dark:text-green-300 mt-1">
                         Congratulations! The wait is over.
                     </p>
+                </div>
+                
+                <div className="mt-6 flex justify-center">
+                    <a 
+                      href="https://buymeacoffee.com/mrproper" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={buttonClasses}
+                    >
+                      <CoffeeIcon className="w-4 h-4 mr-2.5 flex-shrink-0 text-yellow-600 dark:text-yellow-500 group-hover:scale-110 transition-transform" />
+                      <span>Enjoyed this site? Consider supporting its development and server costs.</span>
+                    </a>
                 </div>
             </div>
         );
@@ -83,6 +99,18 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDateString }) => 
             <TimeBlock value={timeLeft.hours} label="Hours" />
             <TimeBlock value={timeLeft.minutes} label="Mins" />
             <TimeBlock value={timeLeft.seconds} label="Secs" />
+        </div>
+        
+        <div className="mt-6 flex justify-center">
+            <a 
+              href="https://buymeacoffee.com/mrproper" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className={buttonClasses}
+            >
+              <CoffeeIcon className="w-4 h-4 mr-2.5 flex-shrink-0 text-yellow-600 dark:text-yellow-500 group-hover:scale-110 transition-transform" />
+              <span>Enjoying this site? Consider supporting its development and server costs.</span>
+            </a>
         </div>
     </div>
   );

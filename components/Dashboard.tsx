@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { TeslaTokens, CombinedOrder, OrderDiff, HistoricalSnapshot } from '../types';
 import { getAllOrderData } from '../services/tesla';
 import { compareObjects, safeLocalStorageSetItem } from '../utils/helpers';
@@ -11,6 +12,7 @@ import { GITHUB_REPO_URL } from '../constants';
 import BuyMeACoffeeButton from './BuyMeACoffeeButton';
 import AdminPanel from './AdminPanel';
 import Tooltip from './Tooltip';
+import DonationBanner from './DonationBanner';
 
 interface DashboardProps {
   tokens: TeslaTokens;
@@ -30,6 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
   const [rainbowMode, setRainbowMode] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [mockOrder, setMockOrder] = useState<CombinedOrder | null>(null);
+  const [debugBannerOpen, setDebugBannerOpen] = useState(false);
   const clickTimeoutRef = useRef<number | null>(null);
 
   const handleLogoClick = useCallback(() => {
@@ -137,49 +140,9 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleApplyMockJson = (json: CombinedOrder, asHistory: boolean) => {
-    const rn = json.order.referenceNumber;
-
-    if (asHistory) {
-      const historyKey = `tesla-order-history-${rn}`;
-      let history: HistoricalSnapshot[] = [];
-      try {
-        const storedHistoryJson = localStorage.getItem(historyKey);
-        if (storedHistoryJson) {
-          history = JSON.parse(storedHistoryJson);
-        }
-      } catch (e) {
-        console.error("Failed to parse history for mock data", e);
-        history = [];
-      }
-
-      const lastSnapshotData = history.length > 0 ? history[history.length - 1].data : null;
-      let diff: OrderDiff = {};
-
-      if (lastSnapshotData) {
-        diff = compareObjects(lastSnapshotData, json);
-      }
-
-      history.push({ timestamp: Date.now(), data: json });
-
-      if (history.length > MAX_HISTORY_ENTRIES) {
-        history = history.slice(-MAX_HISTORY_ENTRIES);
-      }
-
-      safeLocalStorageSetItem(historyKey, JSON.stringify(history));
-      setDiffs(prev => ({ ...prev, [rn]: diff }));
-      setMockOrder(json);
-      setToast({ message: 'Mock data saved to history and loaded!', type: 'success' });
-    } else {
-      setMockOrder(json);
-      // Clear diffs for this mock order to avoid showing stale data from live checks
-      setDiffs(prev => {
-          const newDiffs = { ...prev };
-          delete newDiffs[rn];
-          return newDiffs;
-      });
-      setToast({ message: 'Developer mode: Mock data loaded!', type: 'info' });
-    }
+  const handleApplyMockJson = (json: CombinedOrder) => {
+    setMockOrder(json);
+    setToast({ message: 'Developer mode: Mock data loaded!', type: 'info' });
   };
 
   const handleResetToLive = () => {
@@ -188,13 +151,24 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
     fetchAndCompareOrders(true);
   };
 
+  // Logic to determine if "Significant" changes occurred to prompt the donation banner
+  const hasSignificantChanges = useMemo(() => {
+    const significantKeys = [
+      'order.vin',
+      'details.tasks.scheduling.apptDateTimeAddressStr',
+      'details.tasks.scheduling.deliveryWindowDisplay',
+      'order.orderStatus',
+    ];
+    
+    // Check if any of the keys in the diffs object match our significant list
+    return Object.values(diffs).some(diffObj => 
+      Object.keys(diffObj).some(key => significantKeys.includes(key))
+    );
+  }, [diffs]);
+
 
   const renderContent = () => {
     if (mockOrder) {
-      const rn = mockOrder.order.referenceNumber;
-      const diff = diffs[rn] || {};
-      const hasNewChanges = Object.keys(diff).length > 0;
-
       return (
         <>
           <div className="mb-4 p-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-500/40 text-yellow-800 dark:text-yellow-100 rounded-lg text-center font-semibold animate-fade-in-up">
@@ -203,10 +177,10 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
           <div className="flex justify-center animate-fade-in-up">
             <div className="w-full max-w-4xl">
               <OrderCard
-                key={rn}
+                key={mockOrder.order.referenceNumber}
                 combinedOrder={mockOrder}
-                diff={diff}
-                hasNewChanges={hasNewChanges}
+                diff={{}}
+                hasNewChanges={false}
               />
             </div>
           </div>
@@ -282,7 +256,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
   const iconButtonClasses = "p-2 rounded-full hover:bg-gray-200 dark:hover:bg-tesla-gray-700 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-100 dark:focus-visible:ring-offset-tesla-gray-900 active:scale-90 active:bg-gray-300 dark:active:bg-tesla-gray-600";
   
   return (
-    <div className="min-h-screen w-full max-w-screen-2xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen w-full max-w-screen-2xl mx-auto p-4 sm:p-6 lg:p-8 relative">
       {toast && <Toast key={Date.now()} message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
       <header className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200 dark:border-tesla-gray-700/50">
@@ -347,7 +321,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
         </div>
       </header>
 
-      <main>
+      <main className="mb-20">
         {renderContent()}
       </main>
 
@@ -355,6 +329,13 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
         isOpen={isAdminPanelOpen}
         onClose={() => setIsAdminPanelOpen(false)}
         onApply={handleApplyMockJson}
+        onToggleDebugBanner={() => setDebugBannerOpen(!debugBannerOpen)}
+        isDebugBannerOpen={debugBannerOpen}
+      />
+      
+      <DonationBanner 
+        hasSignificantChanges={hasSignificantChanges} 
+        forceOpen={debugBannerOpen}
       />
     </div>
   );

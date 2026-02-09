@@ -1,14 +1,23 @@
+
 import React, { useState, useRef } from 'react';
 import { CombinedOrder } from '../types';
-import { XIcon } from './icons';
+import { XIcon, CoffeeIcon, TrashIcon } from './icons';
 
 interface AdminPanelProps {
   isOpen: boolean;
   onClose: () => void;
   onApply: (data: CombinedOrder, asHistory: boolean) => void;
+  onToggleDebugBanner: () => void;
+  isDebugBannerOpen: boolean;
 }
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onApply }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ 
+    isOpen, 
+    onClose, 
+    onApply, 
+    onToggleDebugBanner, 
+    isDebugBannerOpen 
+}) => {
   const [jsonInput, setJsonInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [saveAsHistory, setSaveAsHistory] = useState(false);
@@ -40,6 +49,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onApply }) => 
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleResetDonation = () => {
+    try {
+        localStorage.removeItem('tesla-donation-banner-dismissed');
+        localStorage.removeItem('tesla-dashboard-visit-count');
+        localStorage.removeItem('hasClickedBuyMeACoffee');
+        localStorage.removeItem('hasVisitedDashboard');
+        // We do not reload automatically to avoid breaking dev flow, but we alert.
+        alert('Donation local storage flags have been reset. Reload the page to test natural recurrence behavior.');
+    } catch(e) {
+        alert('Failed to reset storage');
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,6 +143,48 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onApply }) => 
               {error}
             </div>
           )}
+
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-tesla-gray-700">
+             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Debug Tools</h3>
+             <div className="flex flex-col gap-3">
+                 <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-tesla-gray-900 rounded-lg border border-gray-200 dark:border-tesla-gray-700">
+                    <div className="flex items-center gap-3">
+                        <CoffeeIcon className="w-5 h-5 text-yellow-600" />
+                        <div>
+                             <p className="text-sm font-medium text-gray-900 dark:text-white">Donation Banner</p>
+                             <p className="text-xs text-gray-500 dark:text-tesla-gray-400">Toggle the sticky donation banner visibility.</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={onToggleDebugBanner}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                            isDebugBannerOpen 
+                            ? 'bg-blue-600 text-white shadow-sm' 
+                            : 'bg-gray-200 dark:bg-tesla-gray-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                    >
+                        {isDebugBannerOpen ? 'Force Shown' : 'Default Behavior'}
+                    </button>
+                 </div>
+                 
+                 <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-tesla-gray-900 rounded-lg border border-gray-200 dark:border-tesla-gray-700">
+                    <div className="flex items-center gap-3">
+                        <TrashIcon className="w-5 h-5 text-red-500" />
+                        <div>
+                             <p className="text-sm font-medium text-gray-900 dark:text-white">Reset Donation State</p>
+                             <p className="text-xs text-gray-500 dark:text-tesla-gray-400">Clear dismissal and visit count flags.</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleResetDonation}
+                        className="px-3 py-1.5 text-xs font-semibold bg-gray-200 dark:bg-tesla-gray-700 hover:bg-gray-300 dark:hover:bg-tesla-gray-600 text-gray-700 dark:text-gray-300 rounded-md transition-colors"
+                    >
+                        Reset Storage
+                    </button>
+                 </div>
+             </div>
+          </div>
+
         </main>
         <footer className="p-5 border-t border-gray-200 dark:border-tesla-gray-700 flex-shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
             <label className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer select-none self-start sm:self-auto">
