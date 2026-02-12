@@ -745,5 +745,6 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "YFFC": "Integrated Center Console",
   "ZCST": "Customer Car",
   "ZENG": "Engineering Car",
-  "ZINV": "Inventory vehicle"
+  "ZINV": "Inventory vehicle",
+  "MTY68": "Model Y Standard RWD"
 };
