@@ -757,5 +757,9 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "IPB14": "Black Microsuede Interior/Dark headlining",
   "MT367": "Model 3 Standard RWD",
   "IBB4": "Black Partial Premium Interior",
-  "W38C": "18\" Prismata Wheels"
+  "W38C": "18\" Prismata Wheels",
+  "MTY62": "Model Y Long Range AWD",
+  "APFA": "Traffic-Aware Cruise Control",
+  "MT369": "Model 3 Long Range RWD",
+  "MT370": "Model 3 Long Range AWD"
 };
