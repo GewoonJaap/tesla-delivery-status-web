@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { TeslaTokens, CombinedOrder, OrderDiff, HistoricalSnapshot } from '../types';
 import { getAllOrderData } from '../services/tesla';
 import { compareObjects, safeLocalStorageSetItem } from '../utils/helpers';
+import { trackEvent } from '../utils/analytics';
 import { MAX_HISTORY_ENTRIES } from '../constants';
 import OrderCard from './OrderCard';
 import Spinner from './Spinner';
@@ -45,9 +46,14 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
 
     if (newClickCount >= 13) {
       setIsAdminPanelOpen(true);
+      trackEvent('admin_panel_open');
       setLogoClicks(0);
     } else if (newClickCount >= 7) {
-      setRainbowMode(prev => !prev);
+      setRainbowMode(prev => {
+        const newValue = !prev;
+        trackEvent('easter_egg_rainbow', { enabled: newValue });
+        return newValue;
+      });
     }
     
     clickTimeoutRef.current = window.setTimeout(() => {
@@ -68,7 +74,11 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
     setError(null);
     if (isManualRefresh) {
       setToast(null);
+      trackEvent('refresh_manual');
+    } else {
+      trackEvent('refresh_auto');
     }
+
     try {
       const newOrders = await handleRefreshAndRetry((accessToken) => getAllOrderData(accessToken));
 
@@ -111,6 +121,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
               setToast({ message: 'Warning: Browser storage is full. History may not be saved.', type: 'info' });
             }
             latestDiffs[rn] = diff;
+            trackEvent('changes_detected', { order_rn: rn, change_count: Object.keys(diff).length });
           }
         } else {
           const initialHistory = [{ timestamp: Date.now(), data: newCombinedOrder }];
@@ -130,12 +141,14 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
     } catch (err) {
       console.error('Failed to fetch orders:', err);
       setError('Could not retrieve order information. Please check your connection and try again.');
+      trackEvent('refresh_error', { error: String(err) });
     } finally {
       setLoading(false);
     }
   }, [handleRefreshAndRetry]);
 
   useEffect(() => {
+    trackEvent('dashboard_view');
     fetchAndCompareOrders(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -143,11 +156,13 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
   const handleApplyMockJson = (json: CombinedOrder) => {
     setMockOrder(json);
     setToast({ message: 'Developer mode: Mock data loaded!', type: 'info' });
+    trackEvent('dev_mock_data_applied');
   };
 
   const handleResetToLive = () => {
     setMockOrder(null);
     setToast({ message: 'Switched back to live data. Refreshing...', type: 'info' });
+    trackEvent('dev_reset_to_live');
     fetchAndCompareOrders(true);
   };
 
@@ -283,6 +298,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
             rel="noopener noreferrer"
             className={iconButtonClasses}
             aria-label="View source on GitHub"
+            onClick={() => trackEvent('click_github_link')}
           >
             <GithubIcon className="w-6 h-6" />
           </a>

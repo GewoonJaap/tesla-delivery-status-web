@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { CoffeeIcon } from './icons';
 import Tooltip from './Tooltip';
+import { trackEvent } from '../utils/analytics';
 
 const BuyMeACoffeeButton: React.FC = () => {
   const [shouldJiggle, setShouldJiggle] = useState(false);
@@ -35,6 +36,7 @@ const BuyMeACoffeeButton: React.FC = () => {
 
   const handleCoffeeClick = () => {
     try {
+      trackEvent('donate_click', { location: 'header' });
       localStorage.setItem('hasClickedBuyMeACoffee', 'true');
       setShouldJiggle(false); // Stop any jiggling
     } catch (e) {

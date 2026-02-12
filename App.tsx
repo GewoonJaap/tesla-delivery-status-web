@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { TeslaTokens } from './types';
 import { exchangeCodeForTokens, refreshAccessToken, TokenExpiredError } from './services/tesla';
 import { isTokenValid, safeLocalStorageSetItem } from './utils/helpers';
+import { trackEvent } from './utils/analytics';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
 import Spinner from './components/Spinner';
@@ -24,8 +26,10 @@ const App: React.FC = () => {
   });
 
   const toggleTheme = useCallback(() => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  }, []);
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    trackEvent('toggle_theme', { theme: newTheme });
+  }, [theme]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -40,6 +44,7 @@ const App: React.FC = () => {
   const handleLogout = useCallback(() => {
     // Only clear session-specific data. Order history and checklist progress
     // will be preserved in localStorage for a better user experience across sessions.
+    trackEvent('logout');
     localStorage.removeItem('tesla-tokens');
     sessionStorage.removeItem('tesla-auth-state');
     sessionStorage.removeItem('tesla-code-verifier');
@@ -64,11 +69,13 @@ const App: React.FC = () => {
           safeLocalStorageSetItem('tesla-tokens', JSON.stringify(newTokens));
           setTokens(newTokens);
           console.log("Token refresh successful, retrying API request...");
+          trackEvent('token_refresh_success');
           // Retry the request with the new token
           return await apiRequest(newTokens.access_token);
         } catch (refreshError: any) {
           console.error("Failed to refresh token:", refreshError);
           setAuthError('Your session has expired. Please log in again.');
+          trackEvent('token_refresh_failure');
           handleLogout();
           return null; // Stop execution, logout is happening
         }
@@ -105,6 +112,7 @@ const App: React.FC = () => {
       const newTokens = await exchangeCodeForTokens(code, codeVerifier);
       safeLocalStorageSetItem('tesla-tokens', JSON.stringify(newTokens));
       setTokens(newTokens);
+      trackEvent('login_success');
       
       try {
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -116,6 +124,7 @@ const App: React.FC = () => {
         console.error('Error handling submitted URL:', error);
         const errorMessage = error.message || 'An unknown error occurred during authentication.';
         setAuthError(`Authentication failed: ${errorMessage}`);
+        trackEvent('login_failure', { error: errorMessage });
         // Do not auto-logout, let user see the error and try again
     } finally {
         setIsSubmitting(false);
@@ -132,10 +141,12 @@ const App: React.FC = () => {
           const storedTokens: TeslaTokens = JSON.parse(storedTokensJson);
           if (isTokenValid(storedTokens.access_token)) {
             setTokens(storedTokens);
+            trackEvent('session_restore_success');
           } else {
             const newTokens = await refreshAccessToken(storedTokens.refresh_token);
             safeLocalStorageSetItem('tesla-tokens', JSON.stringify(newTokens));
             setTokens(newTokens);
+            trackEvent('session_restore_refresh_success');
           }
         } catch (error) {
           console.error('Failed to validate or refresh token on initial load:', error);

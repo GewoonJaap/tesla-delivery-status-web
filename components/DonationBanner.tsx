@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CoffeeIcon, XIcon } from './icons';
+import { trackEvent } from '../utils/analytics';
 
 interface DonationBannerProps {
   hasSignificantChanges: boolean;
@@ -51,6 +52,7 @@ const DonationBanner: React.FC<DonationBannerProps> = ({ hasSignificantChanges, 
       // Small delay to not startle the user immediately on load
       const timer = setTimeout(() => {
         setIsVisible(true);
+        trackEvent('donation_banner_shown', { reason: hasSignificantChanges ? 'significant_changes' : 'loyal_user' });
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -68,8 +70,14 @@ const DonationBanner: React.FC<DonationBannerProps> = ({ hasSignificantChanges, 
   };
 
   const handleOpen = () => {
+    trackEvent('donate_click', { location: 'banner' });
     window.open(DONATION_URL, '_blank', 'noopener,noreferrer');
     handleDismiss(); // Dismiss after clicking
+  };
+
+  const handleCloseClick = () => {
+      trackEvent('donate_dismiss', { location: 'banner' });
+      handleDismiss();
   };
 
   if (isDismissed && !forceOpen) return null;
@@ -105,7 +113,7 @@ const DonationBanner: React.FC<DonationBannerProps> = ({ hasSignificantChanges, 
                 Donate
             </button>
             <button 
-                onClick={handleDismiss}
+                onClick={handleCloseClick}
                 className="p-1.5 text-gray-400 hover:text-gray-600 dark:text-tesla-gray-500 dark:hover:text-tesla-gray-300 hover:bg-gray-100 dark:hover:bg-tesla-gray-700 rounded-full transition-colors"
                 aria-label="Dismiss donation banner"
             >
