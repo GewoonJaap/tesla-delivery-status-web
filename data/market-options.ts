@@ -761,5 +761,12 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "MTY62": "Model Y Long Range AWD",
   "APFA": "Traffic-Aware Cruise Control",
   "MT369": "Model 3 Long Range RWD",
-  "MT370": "Model 3 Long Range AWD"
+  "MT370": "Model 3 Long Range AWD",
+  "CPF2": "Free Premium Connectivity",
+  "IPB10": "Black Interior",
+  "IPB11": "Black Interior",
+  "IW05": "White Decor",
+  "MTC07": "Cybertruck AWD",
+  "MTY70": "Performance",
+  "WW29": "Pirelli Sottozero 3"
 };
