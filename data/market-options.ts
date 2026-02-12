@@ -461,7 +461,7 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "PWS0": "Model S 10.2020",
   "PX00": "No Performance Plus Package",
   "PX01": "Performance Plus",
-  "PX02": "Diamond Black (DirectLease designation, special color)",
+  "PX02": "Diamond Black",
   "PX4D": "90 kWh Performance",
   "PX6D": "Zero to 60 in 2.5 sec",
   "QLBS": "Black Premium Interior",
@@ -746,5 +746,16 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "ZCST": "Customer Car",
   "ZENG": "Engineering Car",
   "ZINV": "Inventory vehicle",
-  "MTY68": "Model Y Standard RWD"
+  "MTY68": "Model Y Standard RWD",
+  "WY18P": "18\" Aperture Wheels",
+  "IBB5": "Black Textile Interior",
+  "MTY78": "Model Y Standard Long Range RWD",
+  "MTY53": "Model Y Performance",
+  "WY21A": "21\" Arachnid Wheels",
+  "PB02": "Marine Blue",
+  "IPW14": "Black and White Microsuede/Dark headlining",
+  "IPB14": "Black Microsuede Interior/Dark headlining",
+  "MT367": "Model 3 Standard RWD",
+  "IBB4": "Black Partial Premium Interior",
+  "W38C": "18\" Prismata Wheels"
 };
