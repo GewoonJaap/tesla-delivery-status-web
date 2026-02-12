@@ -422,7 +422,7 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "P85D": "P85D",
   "PA00": "No Paint Armor",
   "PBCW": "Solid White Color",
-  "PBSB": "Solid Black",
+  "PBSB": "Solid Black Color",
   "PBT85": "Performance 85kWh",
   "PC30": "No Performance Chassis",
   "PC31": "Performance Chassis",
