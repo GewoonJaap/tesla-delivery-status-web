@@ -1,4 +1,3 @@
-
 export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "ACL1": "Ludicrous Mode",
   "AD02": "NEMA 14-50",

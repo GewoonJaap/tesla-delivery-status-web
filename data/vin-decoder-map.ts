@@ -1,5 +1,4 @@
 // Maps for decoding Tesla VINs
-
 export const WMI_MAP: Record<string, string> = {
   '5YJ': 'Tesla, Inc. Passenger Car (Fremont/Austin, USA)',
   '7SA': 'Tesla, Inc. Multipurpose Passenger Vehicle (Austin, USA)',
