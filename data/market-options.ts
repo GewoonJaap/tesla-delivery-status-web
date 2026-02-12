@@ -465,11 +465,7 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "PWS0": "Model S 10.2020",
   "PX00": "No Performance Plus Package",
   "PX01": "Performance Plus",
-<<<<<<< update_codes
   "PX02": "Diamond Black Metallic",
-=======
-  "PX02": "Diamond Black",
->>>>>>> main
   "PX4D": "90 kWh Performance",
   "PX6D": "Zero to 60 in 2.5 sec",
   "QLBS": "Black Premium Interior",
