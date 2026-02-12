@@ -66,8 +66,8 @@ export const DRIVE_UNIT_MAP: Record<string, Record<string, string>> = {
   'S': { // Model S
     '1': 'Single Motor',
     '2': 'Dual Motor',
-    '3': 'Performance Dual Motor',
-    '4': 'Performance Dual Motor',
+    '3': 'Performance – Dual Motor',
+    '4': 'Performance – Dual Motor',
     '5': 'Dual Motor (P2)', // 2023+
     '6': 'Plaid (Tri-Motor, P2)', // 2023+
     'C': 'Base (Dual Motor)', // Legacy Refresh
@@ -75,38 +75,38 @@ export const DRIVE_UNIT_MAP: Record<string, Record<string, string>> = {
   },
   'X': { // Model X
     '2': 'Dual Motor',
-    '4': 'Performance Dual Motor',
+    '4': 'Performance – Dual Motor',
     '5': 'Dual Motor (P2)', // 2023+
     '6': 'Plaid (Tri-Motor, P2)', // 2023+
     'C': 'Base (Dual Motor)', // Legacy Refresh
     'D': 'Plaid (Tri-Motor)', // Legacy Refresh
   },
   '3': { // Model 3
-    'A': 'Single Motor Standard',
-    'B': 'Dual Motor Standard',
+    'A': 'Single Motor – Standard',
+    'B': 'Dual Motor – Standard',
     'C': 'Dual Motor – Performance', // 2023+
-    'F': 'Long Range AWD',
-    'J': 'Single Motor Standard',
-    'K': 'Dual Motor Standard',
-    'R': 'Long Range RWD',
-    'G': 'Standard Range RWD',
-    'S': 'Single Motor Standard',
-    'T': 'Dual Motor Performance',
+    'F': 'Long Range – AWD',
+    'J': 'Single Motor – Standard',
+    'K': 'Dual Motor – Standard',
+    'R': 'Long Range – RWD',
+    'G': 'Standard Range – RWD',
+    'S': 'Single Motor – Standard',
+    'T': 'Dual Motor – Performance',
   },
   'Y': { // Model Y
-    'D': 'Single Motor - Standard',
-    'E': 'Dual Motor - Standard',
-    'F': 'Dual Motor - Performance',
-    'J': 'Single Motor - Standard',
-    'K': 'Dual Motor - Standard',
-    'L': 'Dual Motor - Performance',
-    'R': 'Single Motor - Standard',
-    'S': 'Single Motor - Standard',
-    'A': 'Standard Range RWD',
-    'B': 'Long Range AWD',
-    'C': 'Performance AWD',
-    'G': 'Standard Range RWD',
-    'H': 'Long Range RWD',
+    'D': 'Single Motor – Standard',
+    'E': 'Dual Motor – Standard',
+    'F': 'Dual Motor – Performance',
+    'J': 'Single Motor – Standard',
+    'K': 'Dual Motor – Standard',
+    'L': 'Dual Motor – Performance',
+    'R': 'Single Motor – Standard',
+    'S': 'Single Motor – Standard',
+    'A': 'Standard Range – RWD',
+    'B': 'Long Range – AWD',
+    'C': 'Performance – AWD',
+    'G': 'Standard Range – RWD',
+    'H': 'Long Range – RWD',
   },
   'C': { // Cybertruck
       'D': 'Dual Motor',
