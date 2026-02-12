@@ -768,5 +768,10 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "IW05": "White Decor",
   "MTC07": "Cybertruck AWD",
   "MTY70": "Performance",
-  "WW29": "Pirelli Sottozero 3"
+  "WW29": "Pirelli Sottozero 3",
+  "MTC04": "Cyberbeast",
+  "WH0A": "20\" Core Wheels with 35\" Tires",
+  "IG04": "Tactical Grey Decor",
+  "IG05": "Tactical Grey Decor",
+  "WH0B": "20\" Cyber Wheels with 35\" Tires"
 };
