@@ -443,7 +443,7 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "PB01": "Glacier Blue Metallic",
   "PB02": "Marine Blue Metallic",
   "PN00": "Quicksilver Tricoat Metallic",
-  "PN01": "Stealth Gray Metallic",
+  "PN01": "Stealth Grey Metallic",
   "PP01": "Pedestrian Protection Ped Pro R127 Compliant",
   "PP02": "Pedestrian Protection Ped Pro R127 Compliant",
   "PPMR": "Paint: Red Multi-Coat",

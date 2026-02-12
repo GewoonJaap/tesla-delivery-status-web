@@ -26,8 +26,8 @@ export const BODY_TYPE_MAP: Record<string, Record<string, string>> = {
   },
   'X': { 'C': 'Class E MPV, 5-door, Left Hand Drive' },
   'Y': { 
-    'G': 'Class D MPV / 5 DR / LHD',
-    'H': 'Class D MPV / 5 DR / RHD'
+    'G': 'Class D MPV, 5-door, Left Hand Drive',
+    'H': 'Class D MPV, 5-door, Right Hand Drive'
   },
   'T': { 
     'A': 'Day Cab - Short',
@@ -52,7 +52,7 @@ export const RESTRAINT_SYSTEM_MAP: Record<string, Record<string, string>> = {
     'A': 'Type 2 manual seatbelts (FR, SR*3, TR*2) with front airbags, PODS, side inflatable restraints, knee airbags (FR)',
     'B': 'Type 2 manual seatbelts (FR, SR*2, TR*2) with front airbags, PODS, side inflatable restraints, knee airbags (FR)',
     'C': 'Type 2 manual seatbelts (FR, SR*3) with front airbags, PODS, side inflatable restraints',
-    'D': 'Type 2 manual seatbelts (FR, SR*3) with front airbags, PODS, side Inflatable restraints, knee airbags (FR)'
+    'D': 'Type 2 manual seatbelts (FR, SR*3) with front airbags, PODS, side inflatable restraints, knee airbags (FR)'
   }
 };
 
