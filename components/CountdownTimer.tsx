@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { CoffeeIcon } from './icons';
+import { trackEvent } from '../utils/analytics';
 
 interface CountdownTimerProps {
   targetDateString: string;
@@ -80,6 +81,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDateString }) => 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className={buttonClasses}
+                      onClick={() => trackEvent('donate_click', { location: 'countdown_timer_success' })}
                     >
                       <CoffeeIcon className="w-4 h-4 mr-2.5 flex-shrink-0 text-yellow-600 dark:text-yellow-500 group-hover:scale-110 transition-transform" />
                       <span>Enjoyed this site? Consider supporting its development and server costs.</span>
@@ -107,6 +109,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDateString }) => 
               target="_blank" 
               rel="noopener noreferrer"
               className={buttonClasses}
+              onClick={() => trackEvent('donate_click', { location: 'countdown_timer' })}
             >
               <CoffeeIcon className="w-4 h-4 mr-2.5 flex-shrink-0 text-yellow-600 dark:text-yellow-500 group-hover:scale-110 transition-transform" />
               <span>Enjoying this site? Consider supporting its development and server costs.</span>

@@ -1,7 +1,7 @@
 
-
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { handleTeslaLogin } from '../services/tesla';
+import { trackEvent } from '../utils/analytics';
 import { TeslaLogo, GithubIcon } from './icons';
 import { GITHUB_REPO_URL } from '../constants';
 
@@ -19,6 +19,7 @@ const GithubLink: React.FC = () => (
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-gray-500 dark:text-tesla-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors"
             aria-label="View source on GitHub"
+            onClick={() => trackEvent('click_github_link', { location: 'login_screen' })}
         >
             <GithubIcon className="w-4 h-4" />
             <span className="text-sm">View on GitHub</span>
@@ -46,6 +47,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
 
     if (newClickCount >= 7) {
       setRainbowMode(prev => !prev);
+      trackEvent('easter_egg_rainbow_login', { enabled: true });
       setLogoClicks(0);
     } else {
       clickTimeoutRef.current = window.setTimeout(() => {
@@ -64,6 +66,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
 
   const onLoginClick = async () => {
     setLocalError(null);
+    trackEvent('login_start');
     const authUrl = await handleTeslaLogin();
     setLoginUrlForFallback(authUrl);
     setLoginStep('paste_url');
@@ -80,12 +83,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
       const url = new URL(pastedUrl);
       if (!url.searchParams.has('code')) {
         setLocalError('The pasted URL does not contain a valid authentication code.');
+        trackEvent('login_error', { reason: 'invalid_url_no_code' });
         return;
       }
     } catch (_) {
       setLocalError('The pasted text is not a valid URL.');
+      trackEvent('login_error', { reason: 'invalid_url_format' });
       return;
     }
+    trackEvent('login_submit_url');
     await onUrlSubmit(pastedUrl);
   };
   
@@ -122,7 +128,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
                     aria-label="Manual login URL"
                   />
                   <button 
-                    onClick={() => navigator.clipboard.writeText(loginUrlForFallback)} 
+                    onClick={() => {
+                        navigator.clipboard.writeText(loginUrlForFallback);
+                        trackEvent('login_copy_manual_url');
+                    }} 
                     className="ml-2 px-3 py-1 text-xs bg-yellow-400/50 hover:bg-yellow-400/80 text-yellow-900 dark:text-yellow-100 rounded-md font-semibold transition-all duration-150 active:scale-95"
                     aria-label="Copy login URL"
                   >

@@ -1,6 +1,8 @@
-import React from 'react';
+
+import React, { useRef } from 'react';
 import { MARKET_OPTIONS_MAP } from '../data/market-options';
 import { CheckIcon, PlusCircleIcon, MinusCircleIcon } from './icons';
+import { trackEvent } from '../utils/analytics';
 
 interface VehicleOptionsProps {
   optionsString?: string;
@@ -38,8 +40,21 @@ const OptionItem: React.FC<{
 };
 
 const VehicleOptions: React.FC<VehicleOptionsProps> = ({ optionsString, diffValue }) => {
+  // Use a ref to keep track of codes we've already logged to analytics 
+  // to avoid spamming events on re-renders.
+  const trackedCodesRef = useRef<Set<string>>(new Set());
+
   const decodeOption = (code: string): string => {
-    return MARKET_OPTIONS_MAP[code] || `Unknown Option (${code})`;
+    const label = MARKET_OPTIONS_MAP[code];
+    if (!label) {
+        if (!trackedCodesRef.current.has(code)) {
+            console.warn(`Unknown option code detected: ${code}`);
+            trackEvent('unknown_market_option', { code });
+            trackedCodesRef.current.add(code);
+        }
+        return `Unknown Option (${code})`;
+    }
+    return label;
   };
 
   if (diffValue) {

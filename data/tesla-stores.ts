@@ -79,6 +79,7 @@ export const TESLA_STORES: Record<string, string> = {
   '415466': 'Zeeland - Goes',
   // Norway
   '26253': 'Bodø',
+  '26255': 'Drammen',
   '26256': 'Oslo-Ski',
   // Poland
   '424807': 'Tesla Center Katowice',
@@ -130,4 +131,6 @@ export const TESLA_STORES: Record<string, string> = {
   '334993': 'Tesla Centre Solihull',
   '400821': 'Tesla Centre Wolverhampton',
   '1039': 'Tesla Certified Pre-Owned Centre Bristol',
+  //New Zealand
+  '30962': 'Christchurch',
 };
