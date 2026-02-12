@@ -131,4 +131,7 @@ export const TESLA_STORES: Record<string, string> = {
   '334993': 'Tesla Centre Solihull',
   '400821': 'Tesla Centre Wolverhampton',
   '1039': 'Tesla Certified Pre-Owned Centre Bristol',
+
+  //New Zealand
+  '30962': 'Christchurch',
 };
