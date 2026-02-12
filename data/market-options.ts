@@ -756,7 +756,6 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "MTY78": "Model Y Standard Long Range RWD",
   "MTY53": "Model Y Performance",
   "WY21A": "21\" Arachnid Wheels",
-  "PB02": "Marine Blue",
   "IPW14": "Black and White Microsuede/Dark headlining",
   "IPB14": "Black Microsuede Interior/Dark headlining",
   "MT367": "Model 3 Standard RWD",
