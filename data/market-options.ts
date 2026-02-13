@@ -775,5 +775,11 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "WH0A": "20\" Core Wheels with 35\" Tires",
   "IG04": "Tactical Grey Decor",
   "IG05": "Tactical Grey Decor",
-  "WH0B": "20\" Cyber Wheels with 35\" Tires"
+  "WH0B": "20\" Cyber Wheels with 35\" Tires",
+  "IPB12": "Black Microsuede Interior/Dark headlining",
+  "MT368": "Model 3 RWD",
+  "IBB3": "Black Interior",
+  "IPW12": "Black and White Microsuede/Dark head",
+  "MTY60": "Model Y Long Range RWD",
+  "WW30": "18 Photon Nokian winter package (no studs)"
 };
