@@ -781,5 +781,6 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "IBB3": "Black Interior",
   "IPW12": "Black and White Microsuede/Dark head",
   "MTY60": "Model Y Long Range RWD",
-  "WW30": "18 Photon Nokian winter package (no studs)"
+  "WW30": "18 Photon Nokian winter package (no studs)",
+  "IPB4": "Black Premium Sports Seats"
 };
