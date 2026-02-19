@@ -782,5 +782,14 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "IPW12": "Black and White Microsuede/Dark head",
   "MTY60": "Model Y Long Range RWD",
   "WW30": "18 Photon Nokian winter package (no studs)",
-  "IPB4": "Black Premium Sports Seats"
+  "IPB4": "Black Premium Sports Seats",
+  "MTY67": "Model Y Long Range AWD",
+  "WW33": "19\" Warp Pirelli Winter tyres",
+  "OR01": "Terrestrial Armor",
+  "MT358": "Model 3 RWD",
+  "PB00": "	Frost Blue",
+  "ST06": "Steering wheel",
+  "WS94": "19\" Magnetite",
+  "WY20B": "20\" Helix 2.0 wheels",
+  "IPW10": "Black and White Interior"
 };
