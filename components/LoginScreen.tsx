@@ -4,7 +4,8 @@ import { handleTeslaLogin } from '../services/tesla';
 import { trackEvent } from '../utils/analytics';
 import { TeslaLogo, GithubIcon } from './icons';
 import { GITHUB_REPO_URL } from '../constants';
-import * as Sentry from "@sentry/react";
+
+
 
 interface LoginScreenProps {
   error?: string | null;
@@ -87,10 +88,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
         trackEvent('login_error', { reason: 'invalid_url_no_code' });
         return;
       }
-    } catch (e) {
+    } catch (_) {
       setLocalError('The pasted text is not a valid URL.');
       trackEvent('login_error', { reason: 'invalid_url_format' });
-      Sentry.captureException(e);
       return;
     }
     trackEvent('login_submit_url');
@@ -228,6 +228,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
                 To function, this app stores authentication tokens in your browser. Your password is never seen by this app. For full transparency, the project is open-source.
             </p>
         </div>
+
         <GithubLink />
       </div>
     </main>
