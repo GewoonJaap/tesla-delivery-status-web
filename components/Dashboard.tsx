@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import * as Sentry from "@sentry/react";
 import { TeslaTokens, CombinedOrder, OrderDiff, HistoricalSnapshot } from '../types';
 import { getAllOrderData } from '../services/tesla';
 import { compareObjects, safeLocalStorageSetItem } from '../utils/helpers';
@@ -14,8 +15,6 @@ import BuyMeACoffeeButton from './BuyMeACoffeeButton';
 import AdminPanel from './AdminPanel';
 import Tooltip from './Tooltip';
 import DonationBanner from './DonationBanner';
-
-import * as Sentry from "@sentry/react";
 
 interface DashboardProps {
   tokens: TeslaTokens;
@@ -103,7 +102,6 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
             }
         } catch (e) {
             console.error("Failed to parse history from localStorage for", rn, e);
-            Sentry.captureException(e);
             history = [];
         }
 
