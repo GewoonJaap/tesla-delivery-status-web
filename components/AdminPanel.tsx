@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { CombinedOrder } from '../types';
 import { XIcon, CoffeeIcon, TrashIcon } from './icons';
+import * as Sentry from "@sentry/react";
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -44,6 +45,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       }
     } catch (e: any) {
       setError(`JSON Parse Error: ${e.message}`);
+      Sentry.captureException(e);
     }
   };
 
@@ -61,6 +63,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         alert('Donation local storage flags have been reset. Reload the page to test natural recurrence behavior.');
     } catch(e) {
         alert('Failed to reset storage');
+        Sentry.captureException(e);
     }
   };
 

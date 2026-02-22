@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { CoffeeIcon } from './icons';
 import Tooltip from './Tooltip';
 import { trackEvent } from '../utils/analytics';
+import * as Sentry from "@sentry/react";
 
 const BuyMeACoffeeButton: React.FC = () => {
   const [shouldJiggle, setShouldJiggle] = useState(false);
@@ -31,6 +32,7 @@ const BuyMeACoffeeButton: React.FC = () => {
       }
     } catch (e) {
       console.error("Could not access localStorage for jiggle animation logic", e);
+      Sentry.captureException(e);
     }
   }, []); // Run only on mount
 
@@ -41,6 +43,7 @@ const BuyMeACoffeeButton: React.FC = () => {
       setShouldJiggle(false); // Stop any jiggling
     } catch (e) {
       console.error("Could not write to localStorage", e);
+      Sentry.captureException(e);
     }
   };
 

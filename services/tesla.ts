@@ -102,12 +102,18 @@ async function proxyApiRequest(url: string, accessToken: string) {
     
     // Specifically handle 401 Unauthorized errors for token refresh logic
     if (response.status === 401) {
-        const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
+        const errorData = await response.json().catch((e) => {
+            Sentry.captureException(e);
+            return { error: 'Unauthorized' };
+        });
         throw new TokenExpiredError(`API request failed with 401: ${errorData.error_description || errorData.error || 'Unauthorized'}`);
     }
 
     if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Could not parse error response from proxy' }));
+        const errorData = await response.json().catch((e) => {
+            Sentry.captureException(e);
+            return { error: 'Could not parse error response from proxy' };
+        });
         throw new Error(`API request failed via proxy with status ${response.status}: ${errorData.error_description || errorData.error || response.statusText}`);
     }
     return response.json();

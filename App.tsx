@@ -7,6 +7,7 @@ import { trackEvent } from './utils/analytics';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
 import Spinner from './components/Spinner';
+import * as Sentry from "@sentry/react";
 
 type Theme = 'light' | 'dark';
 
@@ -74,6 +75,7 @@ const App: React.FC = () => {
           return await apiRequest(newTokens.access_token);
         } catch (refreshError: any) {
           console.error("Failed to refresh token:", refreshError);
+          Sentry.captureException(refreshError);
           setAuthError('Your session has expired. Please log in again.');
           trackEvent('token_refresh_failure');
           handleLogout();
@@ -81,6 +83,7 @@ const App: React.FC = () => {
         }
       }
       // Re-throw other types of errors that are not related to token expiry
+      Sentry.captureException(error);
       throw error;
     }
   }, [tokens, setTokens, handleLogout, setAuthError]);
@@ -118,10 +121,12 @@ const App: React.FC = () => {
         window.history.replaceState({}, document.title, window.location.pathname);
       } catch (e) {
         console.warn("Could not clean up URL, continuing operation.", e);
+        Sentry.captureException(e);
       }
       
     } catch (error: any) {
         console.error('Error handling submitted URL:', error);
+        Sentry.captureException(error);
         const errorMessage = error.message || 'An unknown error occurred during authentication.';
         setAuthError(`Authentication failed: ${errorMessage}`);
         trackEvent('login_failure', { error: errorMessage });
@@ -150,6 +155,7 @@ const App: React.FC = () => {
           }
         } catch (error) {
           console.error('Failed to validate or refresh token on initial load:', error);
+          Sentry.captureException(error);
           setAuthError('Your session has expired. Please log in again.');
           handleLogout();
         }

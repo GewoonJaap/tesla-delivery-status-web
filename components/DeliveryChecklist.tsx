@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DELIVERY_CHECKLIST } from '../constants';
 import { safeLocalStorageSetItem } from '../utils/helpers';
+import * as Sentry from "@sentry/react";
 
 interface DeliveryChecklistProps {
   orderReferenceNumber: string;
@@ -31,6 +32,7 @@ const DeliveryChecklist: React.FC<DeliveryChecklistProps> = ({ orderReferenceNum
       }
     } catch (error) {
       console.error("Error reading checklist state from localStorage", error);
+      Sentry.captureException(error);
     }
     return {};
   });
@@ -42,6 +44,7 @@ const DeliveryChecklist: React.FC<DeliveryChecklistProps> = ({ orderReferenceNum
         }
     } catch (error) {
       console.error("Error saving checklist state to localStorage", error);
+      Sentry.captureException(error);
     }
   }, [checkedItems, storageKey]);
 

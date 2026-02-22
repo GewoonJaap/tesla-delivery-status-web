@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { CoffeeIcon, XIcon } from './icons';
 import { trackEvent } from '../utils/analytics';
+import * as Sentry from "@sentry/react";
 
 interface DonationBannerProps {
   hasSignificantChanges: boolean;
@@ -43,6 +44,7 @@ const DonationBanner: React.FC<DonationBannerProps> = ({ hasSignificantChanges, 
       }
     } catch (e) {
       console.warn("LocalStorage access failed", e);
+      Sentry.captureException(e);
     }
 
     // Show if:

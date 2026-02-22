@@ -1,4 +1,5 @@
 import { CombinedOrder, OrderDiff } from "../types";
+import * as Sentry from "@sentry/react";
 
 // --- PKCE Helpers ---
 
@@ -34,6 +35,7 @@ function decodeJwt(token: string): any {
     return JSON.parse(jsonPayload);
   } catch (e) {
     console.error("Failed to decode JWT", e);
+    Sentry.captureException(e);
     return null;
   }
 }
@@ -69,8 +71,10 @@ export function safeLocalStorageSetItem(key: string, value: string): boolean {
     
     if (isQuotaError) {
       console.warn(`LocalStorage quota exceeded while saving key: ${key}. Consider clearing some data.`);
+      Sentry.captureException(e);
     } else {
       console.error(`An error occurred while saving to LocalStorage: ${key}`, e);
+      Sentry.captureException(e);
     }
     return false;
   }

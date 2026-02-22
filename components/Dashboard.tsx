@@ -103,6 +103,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
             }
         } catch (e) {
             console.error("Failed to parse history from localStorage for", rn, e);
+            Sentry.captureException(e);
             history = [];
         }
 

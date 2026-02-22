@@ -3,6 +3,7 @@ import { HistoricalSnapshot } from '../types';
 import { compareObjects } from '../utils/helpers';
 import { DIFF_KEY_LABELS } from '../constants';
 import { XIcon, FileTextIcon, ArrowRightIcon, TrashIcon } from './icons';
+import * as Sentry from "@sentry/react";
 
 interface HistoryModalProps {
   isOpen: boolean;
@@ -58,6 +59,7 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderRefer
       }
     } catch (e) {
       console.error("Failed to parse history from localStorage", e);
+      Sentry.captureException(e);
       setHistory([]);
     }
   }, [orderReferenceNumber]);

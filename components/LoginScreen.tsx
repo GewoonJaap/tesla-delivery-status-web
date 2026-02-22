@@ -4,6 +4,7 @@ import { handleTeslaLogin } from '../services/tesla';
 import { trackEvent } from '../utils/analytics';
 import { TeslaLogo, GithubIcon } from './icons';
 import { GITHUB_REPO_URL } from '../constants';
+import * as Sentry from "@sentry/react";
 
 interface LoginScreenProps {
   error?: string | null;
@@ -86,9 +87,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
         trackEvent('login_error', { reason: 'invalid_url_no_code' });
         return;
       }
-    } catch (_) {
+    } catch (e) {
       setLocalError('The pasted text is not a valid URL.');
       trackEvent('login_error', { reason: 'invalid_url_format' });
+      Sentry.captureException(e);
       return;
     }
     trackEvent('login_submit_url');
