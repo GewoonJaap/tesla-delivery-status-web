@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import * as Sentry from "@sentry/react";
 import { TeslaTokens, CombinedOrder, OrderDiff, HistoricalSnapshot } from '../types';
 import { getAllOrderData } from '../services/tesla';
 import { compareObjects, safeLocalStorageSetItem } from '../utils/helpers';
@@ -126,6 +127,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
 
     } catch (err) {
       console.error('Failed to fetch orders:', err);
+      Sentry.captureException(err);
       setError('Could not retrieve order information. Please check your connection and try again.');
     } finally {
       setLoading(false);
