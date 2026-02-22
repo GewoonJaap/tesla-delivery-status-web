@@ -789,7 +789,11 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "MT358": "Model 3 RWD",
   "PB00": "	Frost Blue",
   "ST06": "Steering wheel",
+  "WW31": "18\" Photon Nokian winter package (with studs)",
+  "WX02": "20\" Perihelix",
   "WS94": "19\" Magnetite",
   "WY20B": "20\" Helix 2.0 wheels",
-  "IPW10": "Black and White Interior"
+  "IPW10": "Black and White Interior",
+  "MTX22": "Model X All Wheel Drive",
+  "IW04": "White Decor"
 };
