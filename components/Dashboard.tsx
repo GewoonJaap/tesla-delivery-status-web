@@ -15,6 +15,8 @@ import AdminPanel from './AdminPanel';
 import Tooltip from './Tooltip';
 import DonationBanner from './DonationBanner';
 
+import * as Sentry from "@sentry/react";
+
 interface DashboardProps {
   tokens: TeslaTokens;
   onLogout: () => void;
@@ -140,6 +142,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
 
     } catch (err) {
       console.error('Failed to fetch orders:', err);
+      Sentry.captureException(err);
       setError('Could not retrieve order information. Please check your connection and try again.');
       trackEvent('refresh_error', { error: String(err) });
     } finally {

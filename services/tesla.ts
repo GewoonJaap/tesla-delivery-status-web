@@ -1,5 +1,6 @@
 
 import { TeslaTokens, TeslaOrder, OrderDetails, CombinedOrder } from '../types';
+import * as Sentry from "@sentry/react";
 import {
   CLIENT_ID,
   REDIRECT_URI,
@@ -131,8 +132,18 @@ export async function getAllOrderData(accessToken: string): Promise<CombinedOrde
     }
     
     const detailedOrdersPromises = basicOrders.map(async (order) => {
-        const details = await getOrderDetails(order.referenceNumber, accessToken);
-        return { order, details };
+        try {
+            const details = await getOrderDetails(order.referenceNumber, accessToken);
+            return { order, details };
+        } catch (error: any) {
+            console.error(`Failed to fetch details for order ${order.referenceNumber}`, error);
+            Sentry.captureException(error);
+            // Return basic order with empty details to prevent app crash and show what we have
+            return { 
+                order, 
+                details: { tasks: {} } 
+            };
+        }
     });
 
     return Promise.all(detailedOrdersPromises);

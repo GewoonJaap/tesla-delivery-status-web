@@ -9,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "@floating-ui/react": "^0.26.16",
+    "@sentry/react": "^10.39.0",
     "lucide-react": "^0.408.0",
-    "@floating-ui/react": "^0.26.16"
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
