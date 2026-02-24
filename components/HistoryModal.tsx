@@ -124,6 +124,14 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderRefer
       }
       
       const diffs = compareObjects(previousSnapshot.data, snapshot.data);
+      
+      // Filter out requestHelp fields
+      Object.keys(diffs).forEach(key => {
+        if (key.includes('requestHelp')) {
+          delete diffs[key];
+        }
+      });
+
       const allDiffs = Object.entries(diffs);
       
       // If there are no changes, don't render an entry for this snapshot.

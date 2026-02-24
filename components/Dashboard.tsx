@@ -109,6 +109,14 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
 
         if (lastSnapshotData) {
           const diff = compareObjects(lastSnapshotData, newCombinedOrder);
+          
+          // Filter out requestHelp fields as they change frequently and are not important
+          Object.keys(diff).forEach(key => {
+            if (key.includes('requestHelp')) {
+              delete diff[key];
+            }
+          });
+
           if (Object.keys(diff).length > 0) {
             history.push({ timestamp: Date.now(), data: newCombinedOrder });
             
