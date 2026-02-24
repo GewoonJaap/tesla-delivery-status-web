@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { HistoricalSnapshot } from '../types';
-import { compareObjects } from '../utils/helpers';
+import { compareObjects, filterIgnoredDiffs } from '../utils/helpers';
 import { DIFF_KEY_LABELS } from '../constants';
 import { XIcon, FileTextIcon, ArrowRightIcon, TrashIcon } from './icons';
 import * as Sentry from "@sentry/react";
@@ -123,14 +123,10 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderRefer
         );
       }
       
-      const diffs = compareObjects(previousSnapshot.data, snapshot.data);
+      let diffs = compareObjects(previousSnapshot.data, snapshot.data);
       
       // Filter out requestHelp fields
-      Object.keys(diffs).forEach(key => {
-        if (key.includes('requestHelp')) {
-          delete diffs[key];
-        }
-      });
+      diffs = filterIgnoredDiffs(diffs);
 
       const allDiffs = Object.entries(diffs);
       

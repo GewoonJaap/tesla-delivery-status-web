@@ -127,6 +127,19 @@ export function compareObjects(oldObj: any, newObj: any, path: string = '', diff
     return diffs;
 }
 
+export function filterIgnoredDiffs(diff: OrderDiff): OrderDiff {
+    const ignoredKeys = ['requestHelp'];
+    const filteredDiff = { ...diff };
+
+    Object.keys(filteredDiff).forEach(key => {
+        if (ignoredKeys.some(ignoredKey => key.includes(ignoredKey))) {
+            delete filteredDiff[key];
+        }
+    });
+
+    return filteredDiff;
+}
+
 export function compareOrders(oldOrders: CombinedOrder[], newOrders: CombinedOrder[]): Record<string, OrderDiff> {
     const allDiffs: Record<string, OrderDiff> = {};
     const newOrdersMap = new Map(newOrders.map(o => [o.order.referenceNumber, o]));

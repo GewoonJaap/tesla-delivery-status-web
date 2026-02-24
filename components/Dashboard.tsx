@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import * as Sentry from "@sentry/react";
 import { TeslaTokens, CombinedOrder, OrderDiff, HistoricalSnapshot } from '../types';
 import { getAllOrderData } from '../services/tesla';
-import { compareObjects, safeLocalStorageSetItem } from '../utils/helpers';
+import { compareObjects, safeLocalStorageSetItem, filterIgnoredDiffs } from '../utils/helpers';
 import { trackEvent } from '../utils/analytics';
 import { MAX_HISTORY_ENTRIES } from '../constants';
 import OrderCard from './OrderCard';
@@ -108,14 +108,10 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
         const lastSnapshotData = history.length > 0 ? history[history.length - 1].data : null;
 
         if (lastSnapshotData) {
-          const diff = compareObjects(lastSnapshotData, newCombinedOrder);
+          let diff = compareObjects(lastSnapshotData, newCombinedOrder);
           
           // Filter out requestHelp fields as they change frequently and are not important
-          Object.keys(diff).forEach(key => {
-            if (key.includes('requestHelp')) {
-              delete diff[key];
-            }
-          });
+          diff = filterIgnoredDiffs(diff);
 
           if (Object.keys(diff).length > 0) {
             history.push({ timestamp: Date.now(), data: newCombinedOrder });
