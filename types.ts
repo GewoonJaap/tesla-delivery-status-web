@@ -56,3 +56,16 @@ export interface HistoricalSnapshot {
   timestamp: number;
   data: CombinedOrder;
 }
+
+export interface BannerConfig {
+  id: string;
+  message: string;
+  link?: string;
+  linkText?: string;
+  condition?: {
+    platform?: 'ios' | 'android' | 'all';
+    startDate?: string; // ISO date string
+    endDate?: string; // ISO date string
+  };
+  type?: 'info' | 'warning' | 'success' | 'error';
+}

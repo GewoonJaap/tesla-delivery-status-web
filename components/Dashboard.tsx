@@ -15,6 +15,7 @@ import BuyMeACoffeeButton from './BuyMeACoffeeButton';
 import AdminPanel from './AdminPanel';
 import Tooltip from './Tooltip';
 import DonationBanner from './DonationBanner';
+import Banner from './Banner';
 
 interface DashboardProps {
   tokens: TeslaTokens;
@@ -348,6 +349,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
       </header>
 
       <main className="mb-20">
+        <Banner />
         {renderContent()}
       </main>
 
