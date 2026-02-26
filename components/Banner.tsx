@@ -94,6 +94,17 @@ const Banner: React.FC = () => {
                 {banner.linkText || 'Learn more'}
               </a>
             )}
+            {banner.secondaryLink && (
+              <a
+                href={banner.secondaryLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-4 underline hover:no-underline font-bold"
+                onClick={() => handleBannerClick(banner.id, banner.secondaryLink)}
+              >
+                {banner.secondaryLinkText || 'Learn more'}
+              </a>
+            )}
           </div>
           <button
             onClick={() => handleDismiss(banner.id)}

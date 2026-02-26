@@ -9,13 +9,14 @@ import { MAX_HISTORY_ENTRIES } from '../constants';
 import OrderCard from './OrderCard';
 import Spinner from './Spinner';
 import Toast from './Toast';
-import { TeslaLogo, LogoutIcon, RefreshIcon, SunIcon, MoonIcon, GithubIcon, ResetIcon } from './icons';
-import { GITHUB_REPO_URL } from '../constants';
+import { TeslaLogo, LogoutIcon, RefreshIcon, SunIcon, MoonIcon, GithubIcon, ResetIcon, MenuIcon, XIcon } from './icons';
+import { GITHUB_REPO_URL, DISCORD_INVITE_URL } from '../constants';
 import BuyMeACoffeeButton from './BuyMeACoffeeButton';
 import AdminPanel from './AdminPanel';
 import Tooltip from './Tooltip';
 import DonationBanner from './DonationBanner';
 import Banner from './Banner';
+import { DiscordLogo } from './logos/DiscordLogo';
 
 interface DashboardProps {
   tokens: TeslaTokens;
@@ -36,6 +37,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [mockOrder, setMockOrder] = useState<CombinedOrder | null>(null);
   const [debugBannerOpen, setDebugBannerOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const clickTimeoutRef = useRef<number | null>(null);
 
   const handleLogoClick = useCallback(() => {
@@ -285,7 +287,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
     <div className="min-h-screen w-full max-w-screen-2xl mx-auto p-4 sm:p-6 lg:p-8 relative">
       {toast && <Toast key={Date.now()} message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
-      <header className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200 dark:border-tesla-gray-700/50">
+      <header className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200 dark:border-tesla-gray-700/50 relative">
         <div className="flex items-center space-x-4">
             <div 
               onClick={handleLogoClick}
@@ -295,10 +297,22 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
             >
               <TeslaLogo className={`w-8 h-8 transition-colors duration-300 ${rainbowMode ? 'animate-rainbow' : 'text-tesla-red'}`} />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Delivery Status</h1>
+            <h1 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-none">Delivery Status</h1>
         </div>
-        <div className="flex items-center space-x-1 sm:space-x-2">
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center space-x-1 sm:space-x-2">
           <BuyMeACoffeeButton />
+           <a
+            href={DISCORD_INVITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={iconButtonClasses}
+            aria-label="Join our Discord"
+            onClick={() => trackEvent('click_discord_link')}
+          >
+            <DiscordLogo className="w-6 h-6" />
+          </a>
            <a
             href={GITHUB_REPO_URL}
             target="_blank"
@@ -346,6 +360,96 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
             <LogoutIcon className="w-6 h-6" />
           </button>
         </div>
+
+        {/* Mobile Navigation Toggle */}
+        <div className="flex lg:hidden items-center space-x-2">
+            <button
+              onClick={() => fetchAndCompareOrders(true)}
+              disabled={loading}
+              className={`${iconButtonClasses} disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 disabled:bg-transparent dark:disabled:bg-transparent`}
+              aria-label="Refresh Orders"
+            >
+              <RefreshIcon className={`w-6 h-6 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+            <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={iconButtonClasses}
+                aria-label="Toggle Menu"
+            >
+                {isMobileMenuOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+            </button>
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+            <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-tesla-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-tesla-gray-700 z-50 overflow-hidden animate-fade-in-up origin-top-right">
+                <div className="p-2 space-y-1">
+                    <div className="px-3 py-2">
+                        <BuyMeACoffeeButton />
+                    </div>
+                    <div className="h-px bg-gray-200 dark:bg-tesla-gray-700 my-1"></div>
+                    <a
+                        href={DISCORD_INVITE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-tesla-gray-700 rounded-lg transition-colors"
+                        onClick={() => {
+                            trackEvent('click_discord_link');
+                            setIsMobileMenuOpen(false);
+                        }}
+                    >
+                        <DiscordLogo className="w-5 h-5 mr-3" />
+                        <span>Join Discord</span>
+                    </a>
+                    <a
+                        href={GITHUB_REPO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-tesla-gray-700 rounded-lg transition-colors"
+                        onClick={() => {
+                            trackEvent('click_github_link');
+                            setIsMobileMenuOpen(false);
+                        }}
+                    >
+                        <GithubIcon className="w-5 h-5 mr-3" />
+                        <span>GitHub</span>
+                    </a>
+                    <button
+                        onClick={() => {
+                            toggleTheme();
+                            setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full flex items-center px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-tesla-gray-700 rounded-lg transition-colors"
+                    >
+                        {theme === 'dark' ? <SunIcon className="w-5 h-5 mr-3" /> : <MoonIcon className="w-5 h-5 mr-3" />}
+                        <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                    </button>
+                    {mockOrder && (
+                        <button
+                            onClick={() => {
+                                handleResetToLive();
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className="w-full flex items-center px-3 py-2 text-yellow-600 dark:text-yellow-400 hover:bg-gray-100 dark:hover:bg-tesla-gray-700 rounded-lg transition-colors"
+                        >
+                            <ResetIcon className="w-5 h-5 mr-3" />
+                            <span>Reset to Live Data</span>
+                        </button>
+                    )}
+                    <div className="h-px bg-gray-200 dark:bg-tesla-gray-700 my-1"></div>
+                    <button
+                        onClick={() => {
+                            onLogout();
+                            setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full flex items-center px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    >
+                        <LogoutIcon className="w-5 h-5 mr-3" />
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        )}
       </header>
 
       <main className="mb-20">

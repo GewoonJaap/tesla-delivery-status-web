@@ -40,6 +40,7 @@ import {
   RectangleHorizontal,
   ArrowRightLeft,
   Trash2,
+  Menu,
 } from 'lucide-react';
 
 export const TeslaLogo: React.FC<{ className?: string }> = ({ className }) => (
@@ -130,3 +131,6 @@ export const TradeInIcon = ArrowRightLeft;
 
 // Icon for Clearing data
 export const TrashIcon = Trash2;
+
+// Icon for Menu
+export const MenuIcon = Menu;

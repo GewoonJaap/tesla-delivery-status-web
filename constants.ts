@@ -9,6 +9,8 @@ export const ORDERS_API_URL = 'https://owner-api.teslamotors.com/api/1/users/ord
 export const ORDER_DETAILS_API_URL_TEMPLATE = 'https://akamai-apigateway-vfx.tesla.com/tasks?deviceLanguage=en&deviceCountry=US&referenceNumber={ORDER_ID}&appVersion=' + APP_VERSION;
 export const PROXY_API_URL = 'https://tesla-delivery-277250840124.europe-west1.run.app/';
 export const GITHUB_REPO_URL = 'https://github.com/GewoonJaap/tesla-delivery-status-web';
+export const DISCORD_INVITE_URL = 'https://discord.gg/jJyngRwqzt';
+export const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Jz6DPS6P';
 
 export const COMPOSITOR_BASE_URL = 'https://static-assets.tesla.com/configurator/compositor';
 
