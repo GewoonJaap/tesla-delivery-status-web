@@ -81,30 +81,46 @@ const Banner: React.FC = () => {
             ${(!banner.type || banner.type === 'info') ? 'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-200' : ''}
           `}
         >
-          <div className="flex-1 mr-8">
-            <span className="font-medium">{banner.message}</span>
-            {banner.link && (
-              <a
-                href={banner.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-2 underline hover:no-underline font-bold"
-                onClick={() => handleBannerClick(banner.id, banner.link)}
-              >
-                {banner.linkText || 'Learn more'}
-              </a>
-            )}
-            {banner.secondaryLink && (
-              <a
-                href={banner.secondaryLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-4 underline hover:no-underline font-bold"
-                onClick={() => handleBannerClick(banner.id, banner.secondaryLink)}
-              >
-                {banner.secondaryLinkText || 'Learn more'}
-              </a>
-            )}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full pr-8">
+            <div className="mb-3 sm:mb-0 sm:mr-4">
+              <span className="font-medium text-sm sm:text-base block">{banner.message}</span>
+            </div>
+            <div className="flex flex-wrap gap-3 shrink-0">
+              {banner.link && (
+                <a
+                  href={banner.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`
+                    px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-colors
+                    ${(!banner.type || banner.type === 'info') ? 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400' : ''}
+                    ${banner.type === 'success' ? 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-400' : ''}
+                    ${banner.type === 'warning' ? 'bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-yellow-500 dark:hover:bg-yellow-400' : ''}
+                    ${banner.type === 'error' ? 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-400' : ''}
+                  `}
+                  onClick={() => handleBannerClick(banner.id, banner.link)}
+                >
+                  {banner.linkText || 'Learn more'}
+                </a>
+              )}
+              {banner.secondaryLink && (
+                <a
+                  href={banner.secondaryLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`
+                    px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-colors border
+                    ${(!banner.type || banner.type === 'info') ? 'border-blue-600 text-blue-700 hover:bg-blue-100 dark:border-blue-400 dark:text-blue-300 dark:hover:bg-blue-900/30' : ''}
+                    ${banner.type === 'success' ? 'border-green-600 text-green-700 hover:bg-green-100 dark:border-green-400 dark:text-green-300 dark:hover:bg-green-900/30' : ''}
+                    ${banner.type === 'warning' ? 'border-yellow-600 text-yellow-800 hover:bg-yellow-100 dark:border-yellow-400 dark:text-yellow-300 dark:hover:bg-yellow-900/30' : ''}
+                    ${banner.type === 'error' ? 'border-red-600 text-red-700 hover:bg-red-100 dark:border-red-400 dark:text-red-300 dark:hover:bg-red-900/30' : ''}
+                  `}
+                  onClick={() => handleBannerClick(banner.id, banner.secondaryLink)}
+                >
+                  {banner.secondaryLinkText || 'Learn more'}
+                </a>
+              )}
+            </div>
           </div>
           <button
             onClick={() => handleDismiss(banner.id)}
