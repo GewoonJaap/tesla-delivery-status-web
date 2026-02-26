@@ -4,7 +4,7 @@ export const DiscordLogo: React.FC<{ className?: string }> = ({ className }) => 
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 -28.5 256 256"
-    className={`${className} text-[#5865F2] dark:text-white`}
+    className={className}
     fill="currentColor"
     role="img"
     aria-label="Discord Logo"
