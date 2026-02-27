@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeftIcon, TeslaLogo } from '../components/icons';
 import { trackEvent } from '../utils/analytics';
+import { GITHUB_REPO_URL, DISCORD_INVITE_URL } from '../constants';
 
 const PrivacyPolicy: React.FC = () => {
   useEffect(() => {
@@ -79,7 +80,24 @@ const PrivacyPolicy: React.FC = () => {
               <section>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">6. Contact Us</h2>
                 <p>
-                  If you have any questions about this Privacy Policy, you can reach out via our GitHub repository or Discord community.
+                  If you have any questions about this Privacy Policy, you can reach out via our{' '}
+                  <a 
+                    href={GITHUB_REPO_URL} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  >
+                    GitHub repository
+                  </a>
+                  {' '}or{' '}
+                  <a 
+                    href={DISCORD_INVITE_URL} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  >
+                    Discord community
+                  </a>.
                 </p>
               </section>
             </div>
