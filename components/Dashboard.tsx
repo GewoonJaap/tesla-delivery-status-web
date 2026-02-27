@@ -17,6 +17,7 @@ import Tooltip from './Tooltip';
 import DonationBanner from './DonationBanner';
 import Banner from './Banner';
 import { DiscordLogo } from './logos/DiscordLogo';
+import LegalFooter from './LegalFooter';
 
 interface DashboardProps {
   tokens: TeslaTokens;
@@ -469,6 +470,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
         hasSignificantChanges={hasSignificantChanges} 
         forceOpen={debugBannerOpen}
       />
+      <LegalFooter className="pb-8" />
     </div>
   );
 };

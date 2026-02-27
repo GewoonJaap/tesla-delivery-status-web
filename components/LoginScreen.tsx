@@ -4,7 +4,7 @@ import { handleTeslaLogin } from '../services/tesla';
 import { trackEvent } from '../utils/analytics';
 import { TeslaLogo, GithubIcon } from './icons';
 import { GITHUB_REPO_URL } from '../constants';
-
+import LegalFooter from './LegalFooter';
 
 
 interface LoginScreenProps {
@@ -177,6 +177,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
             This manual copy-paste step is required by Tesla's authentication flow for third-party apps.
           </p>
           <GithubLink />
+          <LegalFooter className="mt-4" />
         </div>
       </main>
     );
@@ -230,6 +231,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ error, onUrlSubmit, isSubmitt
         </div>
 
         <GithubLink />
+        <LegalFooter className="mt-4" />
       </div>
     </main>
   );

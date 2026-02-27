@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { TeslaTokens } from './types';
 import { exchangeCodeForTokens, refreshAccessToken, TokenExpiredError } from './services/tesla';
 import { isTokenValid, safeLocalStorageSetItem } from './utils/helpers';
@@ -7,6 +8,7 @@ import { trackEvent } from './utils/analytics';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
 import Spinner from './components/Spinner';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import * as Sentry from "@sentry/react";
 
 type Theme = 'light' | 'dark';
@@ -175,20 +177,33 @@ const App: React.FC = () => {
     );
   }
   
-  return tokens ? (
-    <Dashboard 
-      tokens={tokens} 
-      onLogout={handleLogout}
-      handleRefreshAndRetry={handleRefreshAndRetry}
-      theme={theme}
-      toggleTheme={toggleTheme}
-    />
-  ) : (
-    <LoginScreen 
-      error={authError} 
-      onUrlSubmit={handleUrlSubmit}
-      isSubmitting={isSubmitting} 
-    />
+  return (
+    <Router>
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            tokens ? (
+              <Dashboard 
+                tokens={tokens} 
+                onLogout={handleLogout}
+                handleRefreshAndRetry={handleRefreshAndRetry}
+                theme={theme}
+                toggleTheme={toggleTheme}
+              />
+            ) : (
+              <LoginScreen 
+                error={authError} 
+                onUrlSubmit={handleUrlSubmit}
+                isSubmitting={isSubmitting} 
+              />
+            )
+          } 
+        />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 };
 
