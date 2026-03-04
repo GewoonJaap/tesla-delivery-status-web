@@ -787,7 +787,7 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "WW33": "19\" Warp Pirelli Winter tyres",
   "OR01": "Terrestrial Armor",
   "MT358": "Model 3 RWD",
-  "PB00": "	Frost Blue",
+  "PB00": "Frost Blue",
   "ST06": "Steering wheel",
   "WW31": "18\" Photon Nokian winter package (with studs)",
   "WX02": "20\" Perihelix",
