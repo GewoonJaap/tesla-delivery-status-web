@@ -795,5 +795,8 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "WY20B": "20\" Helix 2.0 wheels",
   "IPW10": "Black and White Interior",
   "MTX22": "Model X All Wheel Drive",
-  "IW04": "White Decor"
+  "IW04": "White Decor",
+  "CYBR": "Cybertruck",
+  "APF3": "Full Self Driving (Supervised)",
+  "IPW11": "Black and White Interior"
 };
