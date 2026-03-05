@@ -128,7 +128,7 @@ export function compareObjects(oldObj: any, newObj: any, path: string = '', diff
 }
 
 export function filterIgnoredDiffs(diff: OrderDiff): OrderDiff {
-    const ignoredKeys = ['requestHelp'];
+    const ignoredKeys = ['requestHelp', 'lastUpdateDateTime'];
     const filteredDiff = { ...diff };
 
     Object.keys(filteredDiff).forEach(key => {
