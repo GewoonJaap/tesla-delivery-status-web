@@ -53,6 +53,7 @@ export const DIFF_KEY_LABELS: Record<string, string> = {
   'order.orderStatus': 'Order Status',
   'order.vin': 'VIN',
   'details.tasks.deliveryDetails.regData.reggieLicensePlate': 'License Plate',
+  'details.tasks.registration.regData.reggieLicensePlate': 'License Plate',
   'order.mktOptions': 'Vehicle Options',
   'order.ownerCompanyName': 'Company Name',
   'details.tasks.scheduling.deliveryWindowDisplay': 'Delivery Window',

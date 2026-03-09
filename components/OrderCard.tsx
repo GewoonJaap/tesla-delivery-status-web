@@ -237,7 +237,10 @@ const OrderCard: React.FC<OrderCardProps> = ({ combinedOrder, diff, hasNewChange
   }, [order, modelCode]);
 
   const vin = createDiffWithValue('order.vin');
-  const licensePlate = createDiffWithValue('details.tasks.deliveryDetails.regData.reggieLicensePlate');
+  let licensePlate = createDiffWithValue('details.tasks.deliveryDetails.regData.reggieLicensePlate');
+  if (!licensePlate.value) {
+    licensePlate = createDiffWithValue('details.tasks.registration.regData.reggieLicensePlate');
+  }
   const deliveryWindow = createDiffWithValue('details.tasks.scheduling.deliveryWindowDisplay');
   const appointment = createDiffWithValue('details.tasks.scheduling.apptDateTimeAddressStr');
   const eta = createDiffWithValue('details.tasks.finalPayment.data.etaToDeliveryCenter');
