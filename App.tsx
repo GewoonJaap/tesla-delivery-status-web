@@ -9,6 +9,7 @@ import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
 import Spinner from './components/Spinner';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import IOSPrivacyPolicy from './pages/IOSPrivacyPolicy';
 import * as Sentry from "@sentry/react";
 
 type Theme = 'light' | 'dark';
@@ -201,6 +202,7 @@ const App: React.FC = () => {
           } 
         />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/ios/privacy" element={<IOSPrivacyPolicy />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
