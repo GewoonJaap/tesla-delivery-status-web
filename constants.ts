@@ -11,6 +11,7 @@ export const PROXY_API_URL = 'https://tesla-delivery-277250840124.europe-west1.r
 export const GITHUB_REPO_URL = 'https://github.com/GewoonJaap/tesla-delivery-status-web';
 export const DISCORD_INVITE_URL = 'https://discord.gg/jJyngRwqzt';
 export const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Jz6DPS6P';
+export const APP_STORE_URL = 'https://apps.apple.com/us/app/delivery-status-for-tesla/id6759204893?itscg=30200&itsct=apps_box_badge&mttnsubad=6759204893';
 
 export const COMPOSITOR_BASE_URL = 'https://static-assets.tesla.com/configurator/compositor';
 

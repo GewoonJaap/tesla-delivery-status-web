@@ -42,6 +42,7 @@ const Banner: React.FC = () => {
 
   useEffect(() => {
     const validBanners = BANNERS.filter(banner => {
+      if (banner.enabled === false) return false;
       if (dismissedBanners.includes(banner.id)) return false;
       return checkCondition(banner.condition);
     });

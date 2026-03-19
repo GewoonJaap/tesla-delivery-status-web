@@ -64,6 +64,7 @@ export interface BannerConfig {
   linkText?: string;
   secondaryLink?: string;
   secondaryLinkText?: string;
+  enabled?: boolean;
   condition?: {
     platform?: 'ios' | 'android' | 'all';
     startDate?: string; // ISO date string
