@@ -10,7 +10,7 @@ export const BANNERS: BannerConfig[] = [
     secondaryLink: DISCORD_INVITE_URL,
     secondaryLinkText: 'Join Discord',
     condition: {
-      platform: 'ios',
+      platform: ['ios', 'macos'],
     },
     type: 'info',
   },
@@ -23,7 +23,7 @@ export const BANNERS: BannerConfig[] = [
     secondaryLinkText: 'Join Discord',
     enabled: false,
     condition: {
-      platform: 'ios',
+      platform: ['ios', 'macos'],
     },
     type: 'info',
   },

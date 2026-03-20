@@ -14,12 +14,28 @@ const isAndroid = () => {
   return /Android/.test(navigator.userAgent);
 };
 
+const isMacOS = () => {
+  if (typeof window === 'undefined') return false;
+  // Macintosh detection, but exclude iOS devices (like iPad reporting as MacIntel)
+  return /Macintosh|MacIntel|MacPPC|Mac68K/.test(navigator.userAgent) && !isIOS();
+};
+
 const checkCondition = (condition?: BannerConfig['condition']) => {
   if (!condition) return true;
 
   if (condition.platform) {
-    if (condition.platform === 'ios' && !isIOS()) return false;
-    if (condition.platform === 'android' && !isAndroid()) return false;
+    const platforms = Array.isArray(condition.platform) ? condition.platform : [condition.platform];
+    
+    if (!platforms.includes('all')) {
+      const isCurrentPlatformMatched = platforms.some(p => {
+        if (p === 'ios' && isIOS()) return true;
+        if (p === 'android' && isAndroid()) return true;
+        if (p === 'macos' && isMacOS()) return true;
+        return false;
+      });
+      
+      if (!isCurrentPlatformMatched) return false;
+    }
   }
 
   const now = new Date();
