@@ -799,5 +799,6 @@ export const MARKET_OPTIONS_MAP: Record<string, string> = {
   "CYBR": "Cybertruck",
   "APF3": "Full Self Driving (Supervised)",
   "IPW11": "Black and White Interior",
-  "MT352": "Model 3 Long Range AWD"
+  "MT352": "Model 3 Long Range AWD",
+  "MTY66": "Model Y Long Range RWD"
 };
