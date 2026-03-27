@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ShieldCheckIcon, XIcon } from './icons';
 import { getUserPreferences, setUserPreferences } from '../services/teslaStatus';
 import { motion, AnimatePresence } from 'motion/react';
+import { trackEvent } from '../utils/analytics';
 
 const ConsentBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,11 +18,13 @@ const ConsentBanner: React.FC = () => {
   }, []);
 
   const handleOptIn = () => {
+    trackEvent('data_collection_consent', { status: 'opt_in', source: 'banner' });
     setUserPreferences({ dataCollectionOptIn: true });
     setIsVisible(false);
   };
 
   const handleOptOut = () => {
+    trackEvent('data_collection_consent', { status: 'opt_out', source: 'banner' });
     setUserPreferences({ dataCollectionOptIn: false });
     setIsVisible(false);
   };

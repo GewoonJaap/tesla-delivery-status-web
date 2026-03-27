@@ -5,6 +5,7 @@ import { XIcon, ShieldCheckIcon, TrashIcon, InfoIcon, CarIcon } from './icons';
 import { getUserPreferences, setUserPreferences, deleteTeslaOrder } from '../services/teslaStatus';
 import { motion, AnimatePresence } from 'motion/react';
 import { CombinedOrder } from '../types';
+import { trackEvent, deleteUserData } from '../utils/analytics';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -26,12 +27,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
   }, [isOpen]);
 
   const handleToggle = (checked: boolean) => {
+    trackEvent('data_collection_consent', { status: checked ? 'opt_in' : 'opt_out', source: 'settings' });
     setOptIn(checked);
     setUserPreferences({ dataCollectionOptIn: checked });
   };
 
   const handleClearAllData = () => {
     if (window.confirm('Are you sure you want to clear all locally stored data? This will sign you out and remove your delivery history.')) {
+      trackEvent('clear_local_data');
+      deleteUserData();
       localStorage.clear();
       window.location.reload();
     }
@@ -39,6 +43,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
 
   const handleDeleteAllFromEstimations = async () => {
     if (window.confirm('Are you sure you want to remove all your orders from the community estimation database? This will not affect your Tesla account.')) {
+      trackEvent('delete_all_orders_from_estimations', { count: orders.length });
+      deleteUserData();
       setIsDeletingAll(true);
       let successCount = 0;
       for (const order of orders) {
@@ -57,6 +63,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
 
   const handleDeleteOrder = async (rn: string) => {
     if (window.confirm(`Are you sure you want to remove order ${rn} from the community estimation database?`)) {
+      trackEvent('delete_single_order_from_estimations', { referenceNumber: rn });
       setDeletingOrders(prev => ({ ...prev, [rn]: true }));
       const success = await deleteTeslaOrder(rn, accessToken);
       if (success) {
