@@ -13,6 +13,7 @@
     "@floating-ui/react": "^0.26.16",
     "@sentry/react": "^10.39.0",
     "lucide-react": "^0.408.0",
+    "motion": "^12.38.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.13.1"

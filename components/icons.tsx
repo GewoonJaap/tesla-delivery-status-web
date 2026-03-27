@@ -11,6 +11,7 @@ import {
   GaugeCircle,
   Building2,
   Cog,
+  ShieldCheck,
   Truck,
   ChevronDown,
   Hourglass,
@@ -75,6 +76,8 @@ export const CarIcon = Car;
 export const GaugeIcon = GaugeCircle;
 export const CompanyIcon = Building2;
 export const OptionsIcon = Cog;
+export const SettingsIcon = Cog;
+export const ShieldCheckIcon = ShieldCheck;
 export const DeliveryIcon = Truck;
 export const ChevronDownIcon = ChevronDown;
 export const ETAIcon = Hourglass;

@@ -72,3 +72,7 @@ export interface BannerConfig {
   };
   type?: 'info' | 'warning' | 'success' | 'error';
 }
+
+export interface UserPreferences {
+  dataCollectionOptIn: boolean | null; // null means not yet decided
+}

@@ -59,8 +59,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         localStorage.removeItem('tesla-dashboard-visit-count');
         localStorage.removeItem('hasClickedBuyMeACoffee');
         localStorage.removeItem('hasVisitedDashboard');
+        localStorage.removeItem('tesla-user-preferences');
         // We do not reload automatically to avoid breaking dev flow, but we alert.
-        alert('Donation local storage flags have been reset. Reload the page to test natural recurrence behavior.');
+        alert('Donation and preference flags have been reset. Reload the page to test natural recurrence behavior.');
     } catch(e) {
         alert('Failed to reset storage');
         Sentry.captureException(e);

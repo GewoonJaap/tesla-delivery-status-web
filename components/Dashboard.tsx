@@ -3,16 +3,19 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import * as Sentry from "@sentry/react";
 import { TeslaTokens, CombinedOrder, OrderDiff, HistoricalSnapshot } from '../types';
 import { getAllOrderData } from '../services/tesla';
+import { syncTeslaOrder } from '../services/teslaStatus';
 import { compareObjects, safeLocalStorageSetItem, filterIgnoredDiffs } from '../utils/helpers';
 import { trackEvent } from '../utils/analytics';
 import { MAX_HISTORY_ENTRIES } from '../constants';
 import OrderCard from './OrderCard';
 import Spinner from './Spinner';
 import Toast from './Toast';
-import { TeslaLogo, LogoutIcon, RefreshIcon, SunIcon, MoonIcon, GithubIcon, ResetIcon, MenuIcon, XIcon } from './icons';
+import { TeslaLogo, LogoutIcon, RefreshIcon, SunIcon, MoonIcon, GithubIcon, ResetIcon, MenuIcon, XIcon, SettingsIcon } from './icons';
 import { GITHUB_REPO_URL, DISCORD_INVITE_URL } from '../constants';
 import BuyMeACoffeeButton from './BuyMeACoffeeButton';
 import AdminPanel from './AdminPanel';
+import SettingsModal from './SettingsModal';
+import ConsentBanner from './ConsentBanner';
 import Tooltip from './Tooltip';
 import DonationBanner from './DonationBanner';
 import Banner from './Banner';
@@ -36,6 +39,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
   const [logoClicks, setLogoClicks] = useState(0);
   const [rainbowMode, setRainbowMode] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [mockOrder, setMockOrder] = useState<CombinedOrder | null>(null);
   const [debugBannerOpen, setDebugBannerOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -141,6 +145,13 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
       setOrders(newOrders);
       setDiffs(latestDiffs);
       
+      // Silently sync orders to the new Tesla Status API in the background
+      newOrders.forEach(order => {
+        syncTeslaOrder(order.order.referenceNumber, tokens.access_token).catch(err => {
+          console.warn('Silent sync failed:', err);
+        });
+      });
+
       if (Object.keys(latestDiffs).length > 0) {
         setToast({ message: 'New changes detected!', type: 'success' });
       } else if (isManualRefresh) {
@@ -288,6 +299,8 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
     <div className="min-h-screen w-full max-w-screen-2xl mx-auto p-4 sm:p-6 lg:p-8 relative">
       {toast && <Toast key={Date.now()} message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
+      <ConsentBanner />
+
       <header className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200 dark:border-tesla-gray-700/50 relative">
         <div className="flex items-center space-x-4">
             <div 
@@ -330,6 +343,14 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
             aria-label="Toggle Theme"
           >
             {theme === 'dark' ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
+          </button>
+          
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className={iconButtonClasses}
+            aria-label="Settings"
+          >
+            <SettingsIcon className="w-6 h-6" />
           </button>
           
           {mockOrder ? (
@@ -437,6 +458,16 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
                             <span>Reset to Live Data</span>
                         </button>
                     )}
+                    <button
+                        onClick={() => {
+                            setIsSettingsOpen(true);
+                            setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full flex items-center px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-tesla-gray-700 rounded-lg transition-colors"
+                    >
+                        <SettingsIcon className="w-5 h-5 mr-3" />
+                        <span>Settings</span>
+                    </button>
                     <div className="h-px bg-gray-200 dark:bg-tesla-gray-700 my-1"></div>
                     <button
                         onClick={() => {
@@ -457,6 +488,13 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
         <Banner />
         {renderContent()}
       </main>
+
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        orders={orders}
+        accessToken={tokens.accessToken}
+      />
 
       <AdminPanel 
         isOpen={isAdminPanelOpen}

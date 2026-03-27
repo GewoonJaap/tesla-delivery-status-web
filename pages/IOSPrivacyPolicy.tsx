@@ -26,13 +26,16 @@ const IOSPrivacyPolicy: React.FC = () => {
         <div className="bg-white dark:bg-tesla-gray-800 shadow-xl rounded-2xl overflow-hidden border border-gray-200 dark:border-tesla-gray-700">
           <div className="px-6 py-8 sm:p-10">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">iOS App Privacy Policy</h1>
-            <p className="text-sm text-gray-500 dark:text-tesla-gray-400 mb-8">Last Updated: March 14, 2026</p>
+            <p className="text-sm text-gray-500 dark:text-tesla-gray-400 mb-8">Last Updated: March 27, 2026</p>
 
             <div className="prose prose-slate dark:prose-invert max-w-none space-y-8 text-gray-700 dark:text-tesla-gray-300">
               <section>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">1. Data Collection and Storage</h2>
+                <p className="mb-4">
+                  We prioritize your privacy. <strong>We do not save any of your personal data, Tesla account credentials, or vehicle information on our servers.</strong> All sensitive data retrieved from the Tesla API is processed locally on your device and stored securely within the application's private storage for the purpose of tracking changes in your delivery status.
+                </p>
                 <p>
-                  We prioritize your privacy. <strong>We do not save any of your personal data, Tesla account credentials, or vehicle information on our servers.</strong> All data retrieved from the Tesla API is processed locally on your device and stored securely within the application's private storage for the purpose of tracking changes in your delivery status.
+                  To provide users with better order estimations, we offer an optional feature to collect anonymized analytical order data (such as order dates and status changes). <strong>This is strictly opt-in, and no personally identifiable information (PII) is included in this collection.</strong> This data is used exclusively for statistical analysis and improving the accuracy of delivery predictions for the community. You can enable or disable this feature at any time in the application settings.
                 </p>
               </section>
 
@@ -56,7 +59,7 @@ const IOSPrivacyPolicy: React.FC = () => {
               <section>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">3. Data Retention & Deletion</h2>
                 <p>
-                  You have full control over your data. Users can sign out and delete all locally stored tracking data at any time via the Settings menu in the application. Signing out or using the "Clear All Data" feature will instantly remove all locally stored information from your device.
+                  You have full control over your data. Users can sign out, delete all locally stored tracking data, and manage data collection preferences at any time via the Settings menu in the application. Signing out or using the "Clear All Data" feature will instantly remove all locally stored information from your device. For the removal of anonymized analytical data stored on our servers, please refer to the contact information in Section 6.
                 </p>
               </section>
 
@@ -75,14 +78,14 @@ const IOSPrivacyPolicy: React.FC = () => {
               </section>
 
               <section>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">6. Contact Us</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">6. Contact Us & Data Removal</h2>
                 <p>
-                  If you have any questions about this Privacy Policy, you can reach out via email at:{' '}
+                  If you have any questions about this Privacy Policy or would like to request the removal of your anonymized analytical data, you can reach out via email at:{' '}
                   <a 
-                    href="mailto:ios@mrproper.dev" 
+                    href="mailto:privacy@mrproper.dev" 
                     className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
                   >
-                    ios@mrproper.dev
+                    privacy@mrproper.dev
                   </a>
                 </p>
               </section>
