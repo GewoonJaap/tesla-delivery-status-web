@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { XIcon, ShieldCheckIcon, TrashIcon, InfoIcon, CarIcon } from './icons';
 import { getUserPreferences, setUserPreferences, deleteTeslaOrder } from '../services/teslaStatus';
 import { motion, AnimatePresence } from 'motion/react';
@@ -69,19 +70,19 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-[200] flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto pt-10 sm:pt-20"
         onClick={onClose}
         role="dialog"
         aria-modal="true"
         aria-labelledby="settings-modal-title"
       >
         <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
+          initial={{ scale: 0.95, opacity: 0, y: -20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.95, opacity: 0, y: -20 }}
           className="relative flex flex-col w-full max-w-md bg-white dark:bg-tesla-gray-800 rounded-2xl shadow-2xl overflow-hidden"
           onClick={e => e.stopPropagation()}
         >
@@ -197,7 +198,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
           </footer>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

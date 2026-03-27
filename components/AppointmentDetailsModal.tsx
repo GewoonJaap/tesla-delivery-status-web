@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { TeslaTask } from '../types';
 import { XIcon, CalendarIcon, ClockIcon, PinIcon, MapIcon } from './icons';
 
@@ -33,16 +34,16 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({ isOpe
     return null;
   }
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in-up"
+      className="fixed inset-0 z-[200] flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto pt-10 sm:pt-20"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="appointment-modal-title"
     >
       <div
-        className="relative flex flex-col w-full max-w-lg bg-white dark:bg-tesla-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative flex flex-col w-full max-w-lg bg-white dark:bg-tesla-gray-800 rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up"
         onClick={e => e.stopPropagation()}
       >
         <header className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-tesla-gray-700">
@@ -90,7 +91,8 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({ isOpe
           </a>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

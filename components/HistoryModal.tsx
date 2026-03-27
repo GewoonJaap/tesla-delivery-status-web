@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { HistoricalSnapshot } from '../types';
 import { compareObjects, filterIgnoredDiffs } from '../utils/helpers';
 import { DIFF_KEY_LABELS } from '../constants';
@@ -160,16 +161,16 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderRefer
     });
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto pt-10 sm:pt-20"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="history-modal-title"
     >
       <div
-        className="relative flex flex-col w-full max-w-2xl max-h-[90vh] bg-white dark:bg-tesla-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative flex flex-col w-full max-w-2xl max-h-[90vh] bg-white dark:bg-tesla-gray-800 rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up"
         onClick={e => e.stopPropagation()}
       >
         <header className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-tesla-gray-700 flex-shrink-0">
@@ -220,7 +221,8 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, orderRefer
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
