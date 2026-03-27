@@ -19,7 +19,6 @@ export const trackEvent = (
 
 /**
  * Signals to Google Analytics that the user has requested data deletion.
- * Also disables tracking for the current session.
  */
 export const deleteUserData = () => {
   try {
@@ -27,12 +26,6 @@ export const deleteUserData = () => {
       timestamp: new Date().toISOString(),
       reason: 'user_request'
     });
-
-    if (typeof window !== 'undefined') {
-      // Disable GA for this user/session
-      (window as any)[`ga-disable-${GA_MEASUREMENT_ID}`] = true;
-      console.log("Google Analytics disabled for this session.");
-    }
   } catch (e) {
     console.warn("Error during analytics data deletion signal:", e);
     Sentry.captureException(e);
