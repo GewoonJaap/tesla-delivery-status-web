@@ -76,6 +76,7 @@ export async function syncTeslaOrder(referenceNumber: string, accessToken: strin
  * Deletes a specific order from the estimation database.
  */
 export async function deleteTeslaOrder(rn: string, accessToken: string): Promise<{ success: boolean; message?: string }> {
+  console.log(`Attempting to delete order ${rn} from estimations...`);
   try {
     const response = await fetch(`${TESLA_STATUS_API_URL}/api/orders/${rn}`, {
       method: 'DELETE',

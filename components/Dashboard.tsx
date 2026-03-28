@@ -494,6 +494,10 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
         onClose={() => setIsSettingsOpen(false)} 
         orders={mockOrder ? [mockOrder, ...orders.filter(o => o.order.referenceNumber !== mockOrder.order.referenceNumber)] : orders}
         accessToken={tokens.access_token}
+        onDeleteMock={() => {
+          setMockOrder(null);
+          setToast({ message: 'Mock order removed.', type: 'info' });
+        }}
       />
 
       <AdminPanel 
