@@ -492,8 +492,8 @@ const Dashboard: React.FC<DashboardProps> = ({ tokens, onLogout, handleRefreshAn
       <SettingsModal 
         isOpen={isSettingsOpen} 
         onClose={() => setIsSettingsOpen(false)} 
-        orders={orders}
-        accessToken={tokens.accessToken}
+        orders={mockOrder ? [mockOrder, ...orders.filter(o => o.order.referenceNumber !== mockOrder.order.referenceNumber)] : orders}
+        accessToken={tokens.access_token}
       />
 
       <AdminPanel 

@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { XIcon, ShieldCheckIcon, TrashIcon, InfoIcon, CarIcon } from './icons';
-import { getUserPreferences, setUserPreferences, deleteTeslaOrder } from '../services/teslaStatus';
+import { XIcon, ShieldCheckIcon, TrashIcon, InfoIcon, CarIcon, BugIcon, HeartIcon } from './icons';
+import { getUserPreferences, setUserPreferences, deleteTeslaOrder, donateTeslaOrder } from '../services/teslaStatus';
 import { motion, AnimatePresence } from 'motion/react';
 import { CombinedOrder } from '../types';
 import { trackEvent, deleteUserData } from '../utils/analytics';
@@ -18,6 +18,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
   const [optIn, setOptIn] = useState<boolean>(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [deletingOrders, setDeletingOrders] = useState<Record<string, boolean>>({});
+  const [donatingOrders, setDonatingOrders] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (isOpen) {
@@ -73,6 +74,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
       }
       setDeletingOrders(prev => ({ ...prev, [rn]: false }));
     }
+  };
+
+  const handleDonateOrder = async (rn: string) => {
+    trackEvent('donate_order_data', { referenceNumber: rn });
+    setDonatingOrders(prev => ({ ...prev, [rn]: true }));
+    const result = await donateTeslaOrder(rn, accessToken);
+    alert(result.message);
+    setDonatingOrders(prev => ({ ...prev, [rn]: false }));
   };
 
   if (!isOpen) return null;
@@ -152,16 +161,36 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
                         <p className="text-sm font-bold text-gray-900 dark:text-white">Model {order.order.modelCode}</p>
                         <p className="text-xs font-mono text-gray-500 dark:text-tesla-gray-400">{order.order.referenceNumber}</p>
                       </div>
-                      <button
-                        onClick={() => handleDeleteOrder(order.order.referenceNumber)}
-                        disabled={deletingOrders[order.order.referenceNumber]}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
-                        title="Remove from estimations"
-                      >
-                        <TrashIcon className={`w-5 h-5 ${deletingOrders[order.order.referenceNumber] ? 'animate-pulse' : ''}`} />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleDonateOrder(order.order.referenceNumber)}
+                          disabled={donatingOrders[order.order.referenceNumber]}
+                          className="p-2 text-blue-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors disabled:opacity-50"
+                          title="Donate for debugging"
+                        >
+                          <BugIcon className={`w-5 h-5 ${donatingOrders[order.order.referenceNumber] ? 'animate-pulse' : ''}`} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteOrder(order.order.referenceNumber)}
+                          disabled={deletingOrders[order.order.referenceNumber]}
+                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
+                          title="Remove from estimations"
+                        >
+                          <TrashIcon className={`w-5 h-5 ${deletingOrders[order.order.referenceNumber] ? 'animate-pulse' : ''}`} />
+                        </button>
+                      </div>
                     </div>
                   ))}
+                </div>
+
+                <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <BugIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <h4 className="text-sm font-bold text-blue-900 dark:text-blue-100">Help Improve Predictions</h4>
+                  </div>
+                  <p className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed">
+                    Encountering issues with your delivery dates? Use the <BugIcon className="inline w-3 h-3" /> button to donate your anonymized order data. This helps us identify and fix parsing issues for the community.
+                  </p>
                 </div>
               </section>
             )}

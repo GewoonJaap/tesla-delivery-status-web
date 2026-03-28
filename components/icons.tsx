@@ -42,6 +42,8 @@ import {
   ArrowRightLeft,
   Trash2,
   Menu,
+  Heart,
+  Bug,
 } from 'lucide-react';
 
 export const TeslaLogo: React.FC<{ className?: string }> = ({ className }) => (
@@ -137,3 +139,7 @@ export const TrashIcon = Trash2;
 
 // Icon for Menu
 export const MenuIcon = Menu;
+
+// Icons for Donation/Debugging
+export const HeartIcon = Heart;
+export const BugIcon = Bug;

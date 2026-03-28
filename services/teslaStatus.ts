@@ -102,3 +102,34 @@ export async function deleteTeslaOrder(rn: string, accessToken: string): Promise
     return false;
   }
 }
+
+/**
+ * Donates anonymized order data for diagnostic purposes.
+ */
+export async function donateTeslaOrder(rn: string, accessToken: string): Promise<{ success: boolean; message?: string }> {
+  try {
+    const response = await fetch(`${TESLA_STATUS_API_URL}/api/orders/${rn}/donate`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    if (response.status === 429) {
+      return { success: false, message: 'Rate limit exceeded. You can only donate once per hour.' };
+    }
+
+    if (!response.ok) {
+      throw new Error(`Failed to donate order: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return { success: true, message: data.message || 'Thank you for donating your order data!' };
+  } catch (error) {
+    console.error('Error donating Tesla order:', error);
+    Sentry.captureException(error, {
+      extra: { rn }
+    });
+    return { success: false, message: 'An error occurred while donating your order data.' };
+  }
+}
