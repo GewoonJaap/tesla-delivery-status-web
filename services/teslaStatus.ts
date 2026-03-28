@@ -75,7 +75,7 @@ export async function syncTeslaOrder(referenceNumber: string, accessToken: strin
 /**
  * Deletes a specific order from the estimation database.
  */
-export async function deleteTeslaOrder(rn: string, accessToken: string): Promise<boolean> {
+export async function deleteTeslaOrder(rn: string, accessToken: string): Promise<{ success: boolean; message?: string }> {
   try {
     const response = await fetch(`${TESLA_STATUS_API_URL}/api/orders/${rn}`, {
       method: 'DELETE',
@@ -85,21 +85,20 @@ export async function deleteTeslaOrder(rn: string, accessToken: string): Promise
     });
 
     if (response.status === 404) {
-      console.warn(`Order ${rn} not found on server during deletion.`);
-      return true; // Consider it "deleted" if it's not there
+      return { success: true, message: `Order ${rn} was not found, but is now cleared.` };
     }
 
     if (!response.ok) {
       throw new Error(`Failed to delete order: ${response.statusText}`);
     }
 
-    return true;
+    return { success: true, message: `Order ${rn} removed from estimations successfully.` };
   } catch (error) {
     console.error('Error deleting Tesla order:', error);
     Sentry.captureException(error, {
       extra: { rn }
     });
-    return false;
+    return { success: false, message: `Failed to remove order ${rn}. Please try again later.` };
   }
 }
 

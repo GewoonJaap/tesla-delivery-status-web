@@ -51,8 +51,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
       setIsDeletingAll(true);
       let successCount = 0;
       for (const order of orders) {
-        const success = await deleteTeslaOrder(order.order.referenceNumber, accessToken);
-        if (success) successCount++;
+        const result = await deleteTeslaOrder(order.order.referenceNumber, accessToken);
+        if (result.success) successCount++;
       }
       
       if (successCount === orders.length) {
@@ -68,12 +68,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
     if (window.confirm(`Are you sure you want to remove order ${rn} from the community estimation database?`)) {
       trackEvent('delete_single_order_from_estimations', { referenceNumber: rn });
       setDeletingOrders(prev => ({ ...prev, [rn]: true }));
-      const success = await deleteTeslaOrder(rn, accessToken);
-      if (success) {
-        setToast({ message: `Order ${rn} removed from estimations successfully.`, type: 'success' });
-      } else {
-        setToast({ message: `Failed to remove order ${rn}. Please try again later.`, type: 'info' });
-      }
+      const result = await deleteTeslaOrder(rn, accessToken);
+      setToast({ message: result.message || `Order ${rn} removed successfully.`, type: result.success ? 'success' : 'info' });
       setDeletingOrders(prev => ({ ...prev, [rn]: false }));
     }
   };
