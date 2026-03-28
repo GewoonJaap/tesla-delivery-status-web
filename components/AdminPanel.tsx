@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import { CombinedOrder } from '../types';
 import { XIcon, CoffeeIcon, TrashIcon } from './icons';
 import * as Sentry from "@sentry/react";
+import Toast from './Toast';
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const [jsonInput, setJsonInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [saveAsHistory, setSaveAsHistory] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -61,9 +63,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         localStorage.removeItem('hasVisitedDashboard');
         localStorage.removeItem('tesla-user-preferences');
         // We do not reload automatically to avoid breaking dev flow, but we alert.
-        alert('Donation and preference flags have been reset. Reload the page to test natural recurrence behavior.');
+        setToast({ message: 'Donation and preference flags have been reset. Reload the page to test natural recurrence behavior.', type: 'info' });
     } catch(e) {
-        alert('Failed to reset storage');
+        setToast({ message: 'Failed to reset storage', type: 'info' });
         Sentry.captureException(e);
     }
   };
@@ -107,6 +109,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         className="relative flex flex-col w-full max-w-3xl h-[80vh] bg-white dark:bg-tesla-gray-800 rounded-2xl shadow-2xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
+        {toast && <Toast key={Date.now()} message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         <header className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-tesla-gray-700 flex-shrink-0">
           <h2 id="admin-panel-title" className="text-xl font-bold text-gray-900 dark:text-white">Developer Panel</h2>
           <button

@@ -45,7 +45,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
 
   return (
     <div 
-      className={`fixed top-20 right-6 z-50 flex items-center p-4 rounded-lg shadow-2xl border-l-4 ${bgClasses} ${animationClass}`}
+      className={`fixed top-20 right-6 z-[300] flex items-center p-4 rounded-lg shadow-2xl border-l-4 ${bgClasses} ${animationClass}`}
       role="alert"
     >
       <div className="flex items-start">

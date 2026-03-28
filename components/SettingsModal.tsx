@@ -6,6 +6,7 @@ import { getUserPreferences, setUserPreferences, deleteTeslaOrder, donateTeslaOr
 import { motion, AnimatePresence } from 'motion/react';
 import { CombinedOrder } from '../types';
 import { trackEvent, deleteUserData } from '../utils/analytics';
+import Toast from './Toast';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [deletingOrders, setDeletingOrders] = useState<Record<string, boolean>>({});
   const [donatingOrders, setDonatingOrders] = useState<Record<string, boolean>>({});
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -54,9 +56,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
       }
       
       if (successCount === orders.length) {
-        alert('All orders removed from estimations successfully.');
+        setToast({ message: 'All orders removed from estimations successfully.', type: 'success' });
       } else {
-        alert(`Successfully removed ${successCount} out of ${orders.length} orders. Some might have failed.`);
+        setToast({ message: `Successfully removed ${successCount} out of ${orders.length} orders. Some might have failed.`, type: 'info' });
       }
       setIsDeletingAll(false);
     }
@@ -68,9 +70,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
       setDeletingOrders(prev => ({ ...prev, [rn]: true }));
       const success = await deleteTeslaOrder(rn, accessToken);
       if (success) {
-        alert(`Order ${rn} removed from estimations successfully.`);
+        setToast({ message: `Order ${rn} removed from estimations successfully.`, type: 'success' });
       } else {
-        alert(`Failed to remove order ${rn}. Please try again later.`);
+        setToast({ message: `Failed to remove order ${rn}. Please try again later.`, type: 'info' });
       }
       setDeletingOrders(prev => ({ ...prev, [rn]: false }));
     }
@@ -80,7 +82,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
     trackEvent('donate_order_data', { referenceNumber: rn });
     setDonatingOrders(prev => ({ ...prev, [rn]: true }));
     const result = await donateTeslaOrder(rn, accessToken);
-    alert(result.message);
+    setToast({ message: result.message, type: result.success ? 'success' : 'info' });
     setDonatingOrders(prev => ({ ...prev, [rn]: false }));
   };
 
@@ -95,6 +97,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, orders, 
         aria-modal="true"
         aria-labelledby="settings-modal-title"
       >
+        {toast && <Toast key={Date.now()} message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         <motion.div
           initial={{ scale: 0.95, opacity: 0, y: -20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
